@@ -8,7 +8,12 @@
 			for (const player of players) {
 				const gamesResult = await fetch(`/api/games?id=${player.playerId}`);
 				const gamesBody = await gamesResult.json();
+
+				
 				player.games = gamesBody.games;
+
+				console.log(player.games);
+
 
 				player.overallScore = 0;
 				player.numberFails = 0;
@@ -34,7 +39,11 @@
 					return new Date(b.gameDate) - new Date(a.gameDate);
 				});
 
-				player.lastUpdated = new Date(player.games[0]?.gameDate)?.toJSON()?.slice(0, 10)?.toString();
+				if (player.games.length > 0){
+					player.lastUpdated = new Date(player.games[0].gameDate).toJSON().slice(0, 10).toString();
+				} else {
+					player.lastUpdated = null;
+				}
 				player.showStats = false;
 			};
 

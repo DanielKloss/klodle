@@ -1,8 +1,8 @@
 import { getGamesFromPlayerId, insertGame } from "../../sql";
 
 export async function get(request) {
-    const id = request.url.searchParams.get('id');
-    return games = await getGamesFromPlayerId(id);
+	const id = request.url.searchParams.get('id');
+    return await getGamesFromPlayerId(id);
 }
 
 export async function post(request) {
