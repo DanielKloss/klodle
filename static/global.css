@@ -10,12 +10,22 @@
 }
 
 body {
-  margin: 0;
+  margin: 0px;
   font-family: 'Ubuntu', sans-serif;
-  padding: 1rem;
+  padding: 0px;
 }
 
 :root{
-  --primary: #919191;
-  --background: #C6C6C6;
+  --hue: 220;
+  --hue2: 360;
+  --hue3: 100;
+  --accent1: var(--hue) 43.6% 57.5%;
+  --accent2: var(--hue) 71.4% 95.9%;
+  --accent3: var(--hue2) 43.6% 57.5%;
+  --accent4: var(--hue3) 43.6% 57.5%;
+
+  --large: 1.777rem;
+
+  --radiusSmall: 5px;
+  --radiusLarge: 15px;
 }

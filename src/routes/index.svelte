@@ -12,21 +12,18 @@
 				
 				player.games = gamesBody.games;
 
-				console.log(player.games);
-
-
 				player.overallScore = 0;
 				player.numberFails = 0;
-				player.scores = [{score: 1, count:0}, {score: 2, count:0}, {score: 3, count:0}, {score: 4, count:0}, {score: 5, count:0}, {score: 6, count:0}]
+				player.scores = [{score: 1, count:0}, {score: 2, count:0}, {score: 3, count:0}, {score: 4, count:0}, {score: 5, count:0}, {score: 6, count:0}, {score: 7, count: 0}]
 
 				for (const game of player.games){
 					player.scores.find(s => s.score == game.score).count++;
 
 					if (game.score > 6) {
 						player.numberFails++;
-					} else {
-						player.overallScore += game.score;
 					}
+
+					player.overallScore += game.score;
 				}
 					
 				let biggestScore = Math.max(...player.scores.map(g => g.count), 0);
@@ -96,122 +93,141 @@
 	};
 </script>
 
+<header>Klodle</header>
 <main>
-	{#each players as player, i}
-		<div class="contianer">
-			<div class="playerTitle" on:click="{() => player.showStats = !player.showStats}">
-				<p style="font-weight: bold;">{i+1}</p>
-				<p>{player.playerName}</p>
-				<p style="font-style: italic;">{player.overallScore}</p>
-				{#if date != player.lastUpdated}
-					<div class="inputs">
-						<input type="text" bind:value={player.scoreToAdd}/>
-						<button class="addButton" on:click="{() => addScore(player)}">+</button>
-						<button class="failButton" on:click="{() => failed(player)}">x</button>
-					</div>
-				{/if}
-			</div>
-			{#if player.showStats}
-				<div class="barChart">
-					{#each player.scores as score, i}
-						{#if i == 6}
-							<div class="barLabel">X</div>
-							<div class="bar" style="width:{score.percentage}%;">{score.score}</div>
-						{:else}
-							<div class="barLabel">{i+1}</div>
-							<div class="bar" style="width:{score.percentage}%;">{score.score}</div>
-						{/if}
-					{/each}
-				</div>
-			{/if}
+	<div class="players">
+		<div class="tableTitle">
+			<p>Pos.</p>
+			<p>Name</p>
+			<p>Score</p>
+			<p>Enter</p>
 		</div>
-	{/each}
+		{#each players as player, i}
+			<div class="container">
+				<div class="playerTitle" on:click="{() => player.showStats = !player.showStats}">
+					<p style="font-weight: bold;">{i+1}</p>
+					<p>{player.playerName}</p>
+					<p style="font-style: italic;">{player.overallScore}</p>
+				</div>
+				<div class="inputs" class:disabled="{date == player.lastUpdated}">
+					<input type="text" bind:value={player.scoreToAdd}/>
+					<button class="addButton" on:click="{() => addScore(player)}">+</button>
+					<button class="failButton" on:click="{() => failed(player)}">x</button>
+				</div>
+			</div>
+		{/each}
+	</div>
 </main>
+<footer>
+	<p>Dan Kloss</p>
+	<p>{new Date().getFullYear()}</p>
+	<p>Version 0.1</p>
+</footer>
 
 <style>
-	main {
-		width:80%;
-		margin: 0 auto
+	main{
+		width: 80%;
+		margin: 0 auto;
+		text-transform: uppercase;
 	}
 
-	.contianer {
+	header {
+		text-transform: uppercase;
+		text-align: center;
+		font-size: var(--large);
+		font-weight: bold;
 		margin-bottom: 1rem;
+		background-color: hsl(var(--accent1));
+		padding: 0.5rem 0;
+	}
+
+	footer {
+		position: fixed;
+		left: 0;
+  		bottom: 0;
+  		width: 100%;
+		display: flex;
+		justify-content: center;
+		gap: 1rem;
+		text-transform: uppercase;
+		text-align: center;
+		font-size: 0.5rem;
+		background-color: hsl(var(--accent2));
+	}
+
+	.container {
+		display: flex;
+		margin-bottom: 0.5rem;
+		gap: 0.5rem;
+	}
+
+	.tableTitle {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		justify-items: center;
+		align-items: stretch;
+		font-size: 0.7rem;
+		border-radius: var(--radiusLarge);
+		background-color: hsl(var(--accent2));
+		margin-bottom: 0.5rem;
 	}
 
 	.playerTitle {
+		flex: 1;
 		display: grid;
-		grid-template-columns: repeat(4, 1fr);
+		grid-template-columns: repeat(3, 1fr);
+		grid-template-rows: 1fr;
 		justify-items: center;
 		align-items: stretch;
 	}
 
 	.inputs{
 		display: flex;
+		align-items: stretch;
+	}
+
+	input, button{
+		margin: 0.1rem;
 	}
 
 	input[type="text"]{
-		width: 2rem;
+		width: 1.5rem;
 		text-align: center;
-		border-left: 2px solid;
-		border-top: 2px solid;
-		border-bottom: 2px solid;
-		margin-top: 0.3rem;
-		margin-bottom: 0.3rem;
-		border-radius: 20px 0px 0px 20px;
-	}
-
-	button{
-		border: 0.15rem solid black;
-        font-size: 1.2rem;
-        font-weight: bold;
-        cursor: pointer;
-		margin-top: 0.3rem;
-		margin-bottom: 0.3rem;
-		margin-right: 0.3rem;
-	}
-
-	.addButton{
-		border-radius: 0px 20px 20px 0px;
-		width: 2rem;
+		border-radius: var(--radiusSmall);
 	}
 
 	.failButton{
-		border-color: #cc0000;
-		background-color: white;
-		color: #cc0000;
-	}
-	
-	.barLabel{
-		padding:0.25rem;
-	}
-	
-	.bar{
-		background-color: red;
-		padding:0.25rem;
-	}
-	
-	.barChart{
-		display: grid;
-		grid-template-columns: auto 1fr;
-		gap:0.25rem;
-	}
-	
-	main > :global(:nth-child(1)) {
-  		background-color: #FFE764;
-		border: solid #C6A700 0.25rem;
-	}
-	
-	main > :global(:nth-child(2)) {
-  		background-color: #EEEEEE;
-		border: solid #959595 0.25rem;
-	}
-	
-	main > :global(:nth-child(3)) {
-  		background-color: #FFC48B;
-		border: solid #A86018 0.25rem;
+		border-radius: var(--radiusSmall);
+		border: 0px;
+		background-color: hsl(var(--accent3));
 	}
 
-	main > :global(:nth-child(n+4)) {
-		border: solid transparent 0.25rem;
+	.addButton{
+		border-radius: var(--radiusSmall);
+		border: 0px;
+		background-color: hsl(var(--accent4));
+	}
+
+	.players > :global(:nth-child(2) > .playerTitle) {
+  		background-color: #FFE764;
+		border-radius: var(--radiusLarge);
+	}
+	
+	.players > :global(:nth-child(3) > .playerTitle) {
+  		background-color: #EEEEEE;
+		border-radius: var(--radiusLarge);
+	}
+	
+	.players > :global(:nth-child(4) > .playerTitle) {
+  		background-color: #FFC48B;
+		border-radius: var(--radiusLarge);
+	}
+
+	.disabled {
+		pointer-events: none;
+	}
+
+	.disabled * {
+		background-color: #bbb;
 	}
 </style>
