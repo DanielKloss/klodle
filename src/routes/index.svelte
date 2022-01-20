@@ -13,6 +13,7 @@
 				player.games = gamesBody.games;
 
 				player.overallScore = 0;
+				player.numberOfGames = 0;
 				player.numberFails = 0;
 				player.scores = [{score: 1, count:0}, {score: 2, count:0}, {score: 3, count:0}, {score: 4, count:0}, {score: 5, count:0}, {score: 6, count:0}, {score: 7, count: 0}]
 
@@ -23,6 +24,7 @@
 						player.numberFails++;
 					}
 
+					player.numberOfGames++;
 					player.overallScore += game.score;
 				}
 					
@@ -107,7 +109,7 @@
 				<div class="playerTitle" on:click="{() => player.showStats = !player.showStats}">
 					<p style="font-weight: bold;">{i+1}</p>
 					<p>{player.playerName}</p>
-					<p style="font-style: italic;">{player.overallScore}</p>
+					<p style="font-style: italic;">{player.overallScore / player.numberOfGames}</p>
 				</div>
 				<div class="inputs" class:disabled="{date == player.lastUpdated}">
 					<input type="text" bind:value={player.scoreToAdd}/>
@@ -121,7 +123,7 @@
 <footer>
 	<p>Dan Kloss</p>
 	<p>{new Date().getFullYear()}</p>
-	<p>Version 0.1</p>
+	<p>Version 0.2</p>
 </footer>
 
 <style>
