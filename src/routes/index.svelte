@@ -102,21 +102,17 @@
 			<p>Pos.</p>
 			<p>Name</p>
 			<p>Score</p>
-			<p>Enter</p>
+			<p></p>
 		</div>
 		{#each players as player, i}
-			<div class="container">
-				<div class="playerTitle" on:click="{() => player.showStats = !player.showStats}">
-					<p style="font-weight: bold;">{i+1}</p>
-					<p>{player.playerName}</p>
-					<p style="font-style: italic;">{player.overallScore / player.numberOfGames}</p>
-				</div>
-				<div class="inputs" class:disabled="{date == player.lastUpdated}">
-					<input type="text" bind:value={player.scoreToAdd}/>
-					<button class="addButton" on:click="{() => addScore(player)}">+</button>
-					<button class="failButton" on:click="{() => failed(player)}">x</button>
-				</div>
+		<div class="container">
+			<div class="playerTitle" on:click="{() => player.showStats = !player.showStats}">
+				<p style="font-weight: bold;">{i+1}</p>
+				<p>{player.playerName}</p>
+				<p style="font-style: italic;">{player.overallScore / player.numberOfGames}</p>
+				<button>Stats</button>
 			</div>
+		</div>
 		{/each}
 	</div>
 </main>
@@ -177,7 +173,7 @@
 	.playerTitle {
 		flex: 1;
 		display: grid;
-		grid-template-columns: repeat(3, 1fr);
+		grid-template-columns: repeat(4, 1fr);
 		grid-template-rows: 1fr;
 		justify-items: center;
 		align-items: stretch;
