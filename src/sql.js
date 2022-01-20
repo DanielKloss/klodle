@@ -13,7 +13,7 @@ async function getConnection() {
 export async function getAllPlayers() {
     const connection = await getConnection();
 	const rows = await connection.query(
-		'SELECT playerId, playerName FROM players'
+		'SELECT playerId, playerName FROM players;'
     );
     const players = rows[0];
 	connection.end();
@@ -24,9 +24,21 @@ export async function getAllPlayers() {
 	};
 }
 
+export async function getPlayerById(id) {
+	const connection = await getConnection();
+	const rows = await connection.query('SELECT playerId, playerName FROM players WHERE playerId = ?;', [id]);
+	const player = rows[0][0];
+	connection.end();
+	return {
+		body: {
+			player
+		}
+	};
+}
+
 export async function getGamesFromPlayerId(id) {
     const connection = await getConnection();
-    const rows = await connection.query('SELECT gameId, gameDate, score FROM games WHERE games.playerId = ?', [id]);
+    const rows = await connection.query('SELECT gameId, gameDate, score FROM games WHERE games.playerId = ?;', [id]);
     const games = rows[0];
 	connection.end();
 	return {
@@ -38,6 +50,6 @@ export async function getGamesFromPlayerId(id) {
 
 export async function insertGame(playerId, score, date) {
     const connection = await getConnection();
-	await connection.query('INSERT INTO games (playerId, score, gameDate) VALUES (?,?,?)', [playerId, score, date]);
+	await connection.query('INSERT INTO games (playerId, score, gameDate) VALUES (?,?,?);', [playerId, score, date]);
 	connection.end();
 }

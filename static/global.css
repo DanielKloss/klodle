@@ -17,12 +17,8 @@ body {
 
 :root{
   --hue: 220;
-  --hue2: 360;
-  --hue3: 100;
   --accent1: var(--hue) 43.6% 57.5%;
   --accent2: var(--hue) 71.4% 95.9%;
-  --accent3: var(--hue2) 43.6% 57.5%;
-  --accent4: var(--hue3) 43.6% 57.5%;
 
   --large: 1.777rem;
 
