@@ -42,7 +42,13 @@
 	let error;
 	
 	players.sort(function(a, b) { 
-		return a.averageScore - b.averageScore;
+		let primarySort = a.averageScore - b.averageScore;
+
+		if (primarySort != 0){
+			return primarySort;
+		}
+
+		return b.numberOfGames - a.numberOfGames;
 	});
 
 	const addNewPlayer = async () => {
