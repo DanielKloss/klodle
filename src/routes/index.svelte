@@ -131,6 +131,7 @@
 		font-size: var(--extraSmall);
 		color: white;
 		line-height: 0;
+		text-align: right;
 	}
 
 	.wordleButton {
