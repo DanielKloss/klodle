@@ -22,6 +22,7 @@
   "type": "module",
   "dependencies": {
     "dotenv": "^12.0.4",
-    "mysql2": "^2.3.3"
+    "mysql2": "^2.3.3",
+    "svelte-icons": "^2.1.0"
   }
 }

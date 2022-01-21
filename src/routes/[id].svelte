@@ -1,5 +1,7 @@
 <script context="module">
 	export async function load ({ fetch, params }){
+        let date = new Date().toJSON().slice(0, 10).toString();
+
         const playerResult = await fetch(`/api/players?id=${params.id}`);
         const player = await playerResult.json();
 
@@ -32,6 +34,10 @@
 
             player.numberOfGames++;
             player.overallScore += game.score;
+
+            if (game.gameDate = date){
+                player.todaysScore = game.score;
+            }
         }
             
         let biggestScore = Math.max(...player.scores.map(g => g.count), 0);
@@ -49,6 +55,7 @@
 </script>
 
 <script>
+    import IoMdArrowRoundBack from 'svelte-icons/io/IoMdArrowRoundBack.svelte'
     export let player;
     let scores = [1,2,3,4,5,6,7]
 	let date = new Date().toJSON().slice(0, 10).toString();
@@ -66,7 +73,7 @@
 	};
 
     const addFailed = async () => {
-		let game = { playerId: player.playerId, score: 7, date: new Date().toJSON().slice(0, 10).toString(), }
+		let game = { playerId: player.playerId, score: 7, date: new Date().toJSON().slice(0, 10).toString() }
 		const resultGame = await fetch(`/api/games`, {method: 'POST', body: JSON.stringify(game), headers: {'Content-Type': 'application/json'}});
 
         if (resultGame.status != 200 ) {
@@ -83,26 +90,27 @@
 </svelte:head>
 
 <header>{player.player.playerName}</header>
+<a class="backButton" href="/"><IoMdArrowRoundBack/></a>
 <main>
     {#if player.lastUpdated != date}
     <p class="subHeader">Enter a score:</p>
     <div class="scoreButtons">
         {#each scores as score}
         {#if score==7}
-        <button class="scoreButton" on:click="{() => addFailed}">X</button>
+        <button class="scoreButton" on:click="{() => addFailed()}">X</button>
         {:else}
         <button class="scoreButton" on:click="{() => addScore(score)}">{score}</button>
         {/if}
         {/each}
     </div>
     {:else}
-    <p class="subHeader">Score already entered today</p>
+    <p class="subHeader">Today's Score: {player.todaysScore}</p>
     {/if}
     <p class="subHeader">Stats:</p>
     <div class="overallStats">
         <p>Games: {player.numberOfGames}</p>
         <p>Lost: {player.numberFails}</p>
-        <p>Win %: {(player.numberOfGames - player.numberFails / player.numberOfGames) * 100}</p>
+        <p>Win %: {((player.numberOfGames - player.numberFails) / player.numberOfGames) * 100}</p>
     </div>
     <p class="subHeader">Guess Distribution:</p>
     <div class="barChart">
@@ -126,11 +134,20 @@
     header {
 		text-transform: uppercase;
 		text-align: center;
-		font-size: var(--large);
+		font-size: var(--extraLarge);
 		font-weight: bold;
 		margin-bottom: 1rem;
 		background-color: hsl(var(--accent1));
 		padding: 0.5rem 0;
+	}
+
+    .backButton {
+		position:absolute;
+		top: 7px;
+		left: 7px;
+		color: white;
+        width: 32px;
+        height: 32px;
 	}
 
     main{

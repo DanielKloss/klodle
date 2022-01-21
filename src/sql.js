@@ -53,3 +53,9 @@ export async function insertGame(playerId, score, date) {
 	await connection.query('INSERT INTO games (playerId, score, gameDate) VALUES (?,?,?);', [playerId, score, date]);
 	connection.end();
 }
+
+export async function insertPlayer(playerName) {
+	const connection = await getConnection();
+	await connection.query('INSERT INTO players (playerName) VALUES (?);', [playerName]);
+	connection.end();
+}

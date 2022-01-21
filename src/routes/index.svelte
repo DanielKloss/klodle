@@ -36,10 +36,33 @@
 
 <script>	
 	export let players;
+	let newPlayerName;
+	let error;
 	
 	players.sort(function(a, b) { 
 		return a.overallScore - b.overallScore;
 	});
+
+	const addNewPlayer = async () => {
+		let cleanName = newPlayerName.trim().toLowerCase();
+
+		if (cleanName == "" || cleanName == undefined){
+			error = "Please enter your name";
+			return;
+		} else if (players.filter(p => p.playerName == cleanName).length > 0){
+			error = "Name already taken, please choose another";
+			return;
+		}
+
+		const resultPlayer = await fetch(`/api/players`, {method: 'POST', body: JSON.stringify(cleanName), headers: {'Content-Type': 'application/json'}});
+
+        if (resultPlayer.status != 200 ) {
+            console.log(500, "something wrong with the database");
+            return;
+        }
+
+		location.reload();
+	};
 </script>
 
 <svelte:head>
@@ -47,7 +70,13 @@
 </svelte:head>
 
 <header>Klodle</header>
+<div class="details">
+	<p>Dan Kloss</p>
+	<p>{new Date().getFullYear()}</p>
+	<p>Version 1.0</p>
+</div>
 <main>
+	<a href="https://www.powerlanguage.co.uk/wordle/"><button class="wordleButton" >Today's Wordle</button></a>
 	<div class="players">
 		<div class="tableTitle">
 			<p>Pos.</p>
@@ -58,18 +87,22 @@
 		<div class="container">
 			<a class="playerTitle" href="/{player.playerId}">
 				<p style="font-weight: bold;">{i+1}</p>
-				<p>{player.playerName}</p>
+				<p style="text-transform: capitalize;">{player.playerName}</p>
 				<p style="font-style: italic;">{player.overallScore / player.numberOfGames}</p>
 			</a>
 		</div>
 		{/each}
+		<div class="container addPlayer">
+			<input placeholder="New Player's Username" class="addPlayerText" bind:value={newPlayerName}/>
+			<button class="addPlayerButton" on:click="{() => addNewPlayer()}">Add</button>
+		</div>
+		{#if error != undefined}
+		<p class="container error">
+			{error}
+		</p>
+		{/if}
 	</div>
 </main>
-<footer>
-	<p>Dan Kloss</p>
-	<p>{new Date().getFullYear()}</p>
-	<p>Version 0.5</p>
-</footer>
 
 <style>
 	a { 
@@ -85,31 +118,48 @@
 	header {
 		text-transform: uppercase;
 		text-align: center;
-		font-size: var(--large);
+		font-size: var(--extraLarge);
 		font-weight: bold;
-		margin-bottom: 1rem;
 		background-color: hsl(var(--accent1));
 		padding: 0.5rem 0;
 	}
 
-	footer {
-		position: fixed;
-		left: 0;
-  		bottom: 0;
-  		width: 100%;
+	.details {
+		position:absolute;
+		top: 5px;
+		right: 5px;
+		font-size: var(--extraSmall);
+		color: white;
+		line-height: 0;
+	}
+
+	.wordleButton {
 		display: flex;
 		justify-content: center;
-		gap: 1rem;
+		margin: 1rem auto;
 		text-transform: uppercase;
-		text-align: center;
-		font-size: 0.5rem;
-		background-color: hsl(var(--accent2));
+		border-radius: var(--radiusSmall);
+        font-size: var(--small);
+        padding: 0.5rem 0.75rem;
+        background-color: hsl(var(--accent1));
+		border: 0px;
+		color: white;
 	}
 
 	.container {
 		display: flex;
 		margin-bottom: 0.5rem;
 		gap: 0.5rem;
+	}
+
+	.addPlayer {
+		justify-content: center;
+	}
+
+	.error {
+		text-align: center;
+		justify-content: center;
+		color: hsl(var(--accent1));
 	}
 
 	.tableTitle {
@@ -145,5 +195,20 @@
 	.players > :global(:nth-child(4) > .playerTitle) {
   		background-color: #FFC48B;
 		border-radius: var(--radiusLarge);
+	}
+
+	.addPlayerButton {
+		border-radius: var(--radiusSmall);
+		border: 0px;
+		text-transform: uppercase;
+        font-size: var(--large);
+        padding: 0.5rem 0.75rem;
+        background-color: hsl(var(--accent1));
+		color: white;
+	}
+
+	.addPlayerText {
+		border-radius: var(--radiusLarge);
+		padding-left: 1rem;
 	}
 </style>
