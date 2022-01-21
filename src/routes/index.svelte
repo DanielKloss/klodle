@@ -22,6 +22,8 @@
 					player.numberOfGames++;
 					player.overallScore += game.score;
 				}
+
+				player.averageScore = player.overallScore / player.numberOfGames;
 			};
 
 			return {
@@ -40,7 +42,7 @@
 	let error;
 	
 	players.sort(function(a, b) { 
-		return a.overallScore - b.overallScore;
+		return a.averageScore - b.averageScore;
 	});
 
 	const addNewPlayer = async () => {
@@ -88,7 +90,7 @@
 			<a class="playerTitle" href="/{player.playerId}">
 				<p style="font-weight: bold;">{i+1}</p>
 				<p style="text-transform: capitalize;">{player.playerName}</p>
-				<p style="font-style: italic;">{player.overallScore / player.numberOfGames}</p>
+				<p style="font-style: italic;">{player.averageScore.toFixed(1)}</p>
 			</a>
 		</div>
 		{/each}
@@ -126,12 +128,14 @@
 
 	.details {
 		position:absolute;
-		top: 5px;
-		right: 5px;
+		top: 0px;
+		right: 0px;
 		font-size: var(--extraSmall);
 		color: white;
 		line-height: 0;
 		text-align: right;
+		border-left: white 0.1rem solid;
+		padding: 0.4rem;
 	}
 
 	.wordleButton {
