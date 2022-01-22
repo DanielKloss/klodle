@@ -1,6 +1,8 @@
 <script context="module">
 	export async function load ({ fetch }){
 		try {
+        	let date = new Date().toJSON().slice(0, 10).toString();
+
 			const playersResult = await fetch('/api/players');
 			const playersBody = await playersResult.json();
 			const players = playersBody.players;
@@ -21,6 +23,10 @@
 
 					player.numberOfGames++;
 					player.overallScore += game.score;
+
+					if (new Date(game.gameDate).toJSON().slice(0, 10).toString() == date){
+                		player.todaysScore = game.score;
+            		}
 				}
 
 				player.averageScore = player.overallScore / player.numberOfGames;
@@ -41,9 +47,32 @@
 	export let players;
 	let newPlayerName;
 	let error;
+	let todaySelected = true;
 	
-	players.sort(function(a, b) { 
-		let primarySort = a.averageScore - b.averageScore;
+	function sortPlayers(a, b) { 
+		let primarySort;
+
+		if (todaySelected) {
+			if(!isFinite(a.todaysScore) ) {
+        		return 1;
+    		}
+		
+    		if(!isFinite(b.todaysScore) ) {
+        		return -1;
+    		}
+
+			primarySort = a.todaysScore - b.todaysScore;
+		} else {
+			if(!isFinite(a.averageScore) ) {
+        		return 1;
+    		}
+		
+    		if(!isFinite(b.averageScore) ) {
+        		return -1;
+    		}
+			
+			primarySort = a.averageScore - b.averageScore;
+		}
 
 		if (primarySort != 0){
 			return primarySort;
@@ -56,7 +85,12 @@
 		}
 
 		return a.numberOfFails - b.numberOfFails;
-	});
+	};
+
+	const changeLeaderboard = (today) => {
+		todaySelected = today;
+		players = [...players.sort(sortPlayers)];
+	};
 
 	const addNewPlayer = async () => {
 		let cleanName = newPlayerName.trim().toLowerCase();
@@ -78,6 +112,8 @@
 
 		location.reload();
 	};
+
+	players = [...players.sort(sortPlayers)];
 </script>
 
 <svelte:head>
@@ -91,19 +127,21 @@
 	<p>Version 1.0</p>
 </div>
 <main>
+	<div class="leaderboardButtons">
+		<button on:click="{() => changeLeaderboard(true)}" class="leaderboardButton" class:selectedLeaderboardButton="{todaySelected}">Today's Scores</button>
+		<button on:click="{() => changeLeaderboard(false)}" class="leaderboardButton" class:selectedLeaderboardButton="{!todaySelected}">Overall Scores</button>
+	</div>
 	<div class="players">
-		<div class="container">
-		<div class="trophy">
-			</div>
 		<div class="tableTitle">
+			<div class="trophy"></div>
 			<p>Pos.</p>
 			<p>Name</p>
 			<p>Score</p>
 		</div>
-		</div>
 		{#each players as player, i}
 		<div class="container">
-			{#if i < 3}
+			<a class="playerTitle" href="/{player.playerId}">
+				{#if i < 3}
 			<div class="trophy">
 				<IoMdTrophy/>
 			</div>
@@ -112,10 +150,19 @@
 
 			</div>
 			{/if}
-			<a class="playerTitle" href="/{player.playerId}">
 				<p style="font-weight: bold;">{i+1}</p>
 				<p style="text-transform: capitalize;">{player.playerName}</p>
-				<p style="font-style: italic;">{player.averageScore.toFixed(1)}</p>
+				{#if todaySelected}
+					{#if player.todaysScore == 7}
+					<p style="font-style: italic;">X</p>
+					{:else if player.todaysScore == undefined}
+					<p style="font-style: italic;">-</p>
+					{:else}
+					<p style="font-style: italic;">{player.todaysScore}</p>
+					{/if}
+				{:else}
+					<p style="font-style: italic;">{player.averageScore.toFixed(1)}</p>
+				{/if}
 			</a>
 		</div>
 		{/each}
@@ -164,6 +211,25 @@
 		padding: 0.4rem;
 	}
 
+	.leaderboardButtons {
+		display: flex;
+		justify-content: space-around;
+		margin-bottom: 1rem;
+	}
+
+	.leaderboardButton {
+		text-transform: uppercase;
+		font-size: var(--medium);
+		font-weight: bold;
+		border: 0px;
+		background-color: transparent;
+		width: 30%;
+	}
+
+	.selectedLeaderboardButton {
+		border-bottom: 0.2rem solid hsl(var(--accent1));
+	}
+
 	.container {
 		display: flex;
 		margin-bottom: 0.5rem;
@@ -184,9 +250,8 @@
 	}
 
 	.tableTitle {
-		flex: 1;
 		display: grid;
-		grid-template-columns: repeat(3, 1fr);
+		grid-template-columns: auto repeat(3, 1fr);
 		justify-items: center;
 		align-items: stretch;
 		font-size: 0.7rem;
@@ -198,10 +263,10 @@
 	.playerTitle {
 		flex: 1;
 		display: grid;
-		grid-template-columns: repeat(3, 1fr);
+		grid-template-columns: auto repeat(3, 1fr);
 		grid-template-rows: 1fr;
 		justify-items: center;
-		align-items: stretch;
+		align-items: center;
 	}
 
 	.players > :global(:nth-child(2) > .playerTitle) {
@@ -220,20 +285,9 @@
 	}
 
 	.trophy {
-		width: 32px;
-		height: 32px;
-	}
-
-	.players > :global(:nth-child(2) > .trophy) {
-  		color: #FFE764;
-	}
-	
-	.players > :global(:nth-child(3) > .trophy) {
-  		color: #EEEEEE;
-	}
-	
-	.players > :global(:nth-child(4) > .trophy) {
-  		color: #FFC48B;
+		width: 20px;
+		height: 20px;
+		margin-left: 1rem;
 	}
 
 	.addPlayerButton {
