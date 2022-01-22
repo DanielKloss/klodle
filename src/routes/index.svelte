@@ -36,7 +36,8 @@
 	};
 </script>
 
-<script>	
+<script>
+	import IoMdTrophy from 'svelte-icons/io/IoMdTrophy.svelte';
 	export let players;
 	let newPlayerName;
 	let error;
@@ -48,7 +49,13 @@
 			return primarySort;
 		}
 
-		return b.numberOfGames - a.numberOfGames;
+		let secondarySort = b.numberOfGames - a.numberOfGames;
+
+		if (secondarySort != 0){
+			return secondarySort;
+		}
+
+		return a.numberOfFails - b.numberOfFails;
 	});
 
 	const addNewPlayer = async () => {
@@ -85,13 +92,26 @@
 </div>
 <main>
 	<div class="players">
+		<div class="container">
+		<div class="trophy">
+			</div>
 		<div class="tableTitle">
 			<p>Pos.</p>
 			<p>Name</p>
 			<p>Score</p>
 		</div>
+		</div>
 		{#each players as player, i}
 		<div class="container">
+			{#if i < 3}
+			<div class="trophy">
+				<IoMdTrophy/>
+			</div>
+			{:else}
+			<div class="trophy">
+
+			</div>
+			{/if}
 			<a class="playerTitle" href="/{player.playerId}">
 				<p style="font-weight: bold;">{i+1}</p>
 				<p style="text-transform: capitalize;">{player.playerName}</p>
@@ -99,7 +119,7 @@
 			</a>
 		</div>
 		{/each}
-		<div class="container addPlayer">
+		<div class="addPlayer">
 			<input placeholder="New Player's Username" class="addPlayerText" bind:value={newPlayerName}/>
 			<button class="addPlayerButton" on:click="{() => addNewPlayer()}">Add</button>
 		</div>
@@ -147,11 +167,14 @@
 	.container {
 		display: flex;
 		margin-bottom: 0.5rem;
+		align-items: center;
 		gap: 0.5rem;
 	}
 
 	.addPlayer {
+		display: flex;
 		justify-content: center;
+		gap: 0.5rem;
 	}
 
 	.error {
@@ -161,6 +184,7 @@
 	}
 
 	.tableTitle {
+		flex: 1;
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
 		justify-items: center;
@@ -193,6 +217,23 @@
 	.players > :global(:nth-child(4) > .playerTitle) {
   		background-color: #FFC48B;
 		border-radius: var(--radiusLarge);
+	}
+
+	.trophy {
+		width: 32px;
+		height: 32px;
+	}
+
+	.players > :global(:nth-child(2) > .trophy) {
+  		color: #FFE764;
+	}
+	
+	.players > :global(:nth-child(3) > .trophy) {
+  		color: #EEEEEE;
+	}
+	
+	.players > :global(:nth-child(4) > .trophy) {
+  		color: #FFC48B;
 	}
 
 	.addPlayerButton {
