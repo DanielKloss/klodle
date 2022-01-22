@@ -30,6 +30,7 @@
 				}
 
 				player.averageScore = player.overallScore / player.numberOfGames;
+				console.log(player.averageScore);
 			};
 
 			return {
@@ -53,21 +54,21 @@
 		let primarySort;
 
 		if (todaySelected) {
-			if(!isFinite(a.todaysScore) ) {
+			if(!isFinite(a.todaysScore)) {
         		return 1;
     		}
 		
-    		if(!isFinite(b.todaysScore) ) {
+    		if(!isFinite(b.todaysScore)) {
         		return -1;
     		}
 
 			primarySort = a.todaysScore - b.todaysScore;
 		} else {
-			if(!isFinite(a.averageScore) ) {
+			if(!isFinite(a.averageScore)) {
         		return 1;
     		}
 		
-    		if(!isFinite(b.averageScore) ) {
+    		if(!isFinite(b.averageScore)) {
         		return -1;
     		}
 			
@@ -161,7 +162,11 @@
 					<p style="font-style: italic;">{player.todaysScore}</p>
 					{/if}
 				{:else}
+					{#if !isFinite(player.averageScore)}
+					<p style="font-style: italic;">-</p>
+					{:else}
 					<p style="font-style: italic;">{player.averageScore.toFixed(1)}</p>
+					{/if}
 				{/if}
 			</a>
 		</div>
