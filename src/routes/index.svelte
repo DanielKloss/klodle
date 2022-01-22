@@ -30,7 +30,6 @@
 				}
 
 				player.averageScore = player.overallScore / player.numberOfGames;
-				console.log(player.averageScore);
 			};
 
 			return {
