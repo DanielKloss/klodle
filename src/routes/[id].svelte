@@ -35,7 +35,7 @@
             player.numberOfGames++;
             player.overallScore += game.score;
 
-            if (game.gameDate = date){
+            if (new Date(game.gameDate).toJSON().slice(0, 10).toString() == date){
                 player.todaysScore = game.score;
             }
         }
@@ -73,7 +73,7 @@
 	};
 
     const addFailed = async () => {
-		let game = { playerId: player.playerId, score: 7, date: new Date().toJSON().slice(0, 10).toString() }
+		let game = { playerId: player.player.playerId, score: 7, date: new Date().toJSON().slice(0, 10).toString() }
 		const resultGame = await fetch(`/api/games`, {method: 'POST', body: JSON.stringify(game), headers: {'Content-Type': 'application/json'}});
 
         if (resultGame.status != 200 ) {

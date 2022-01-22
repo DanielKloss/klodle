@@ -84,7 +84,6 @@
 	<p>Version 1.0</p>
 </div>
 <main>
-	<a href="https://www.powerlanguage.co.uk/wordle/"><button class="wordleButton" >Today's Wordle</button></a>
 	<div class="players">
 		<div class="tableTitle">
 			<p>Pos.</p>
@@ -121,6 +120,7 @@
 	main{
 		width: 80%;
 		margin: 0 auto;
+		margin-top: 1rem;
 	}
 
 	header {
@@ -142,19 +142,6 @@
 		text-align: right;
 		border-left: white 0.1rem solid;
 		padding: 0.4rem;
-	}
-
-	.wordleButton {
-		display: flex;
-		justify-content: center;
-		margin: 1rem auto;
-		text-transform: uppercase;
-		border-radius: var(--radiusSmall);
-        font-size: var(--small);
-        padding: 0.5rem 0.75rem;
-        background-color: hsl(var(--accent1));
-		border: 0px;
-		color: white;
 	}
 
 	.container {
