@@ -59,3 +59,9 @@ export async function insertPlayer(playerName) {
 	await connection.query('INSERT INTO players (playerName) VALUES (?);', [playerName]);
 	connection.end();
 }
+
+export async function deleteGame(gameId) {
+	const connection = await getConnection();
+	await connection.query('DELETE FROM games WHERE gameId = ?;', [gameId]);
+	connection.end();
+}

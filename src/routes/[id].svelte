@@ -10,16 +10,6 @@
 
         player.games = games.games;
 
-        player.games.sort(function(a,b){
-            return new Date(b.gameDate) - new Date(a.gameDate);
-        });
-
-        if (player.games.length > 0){
-            player.lastUpdated = new Date(player.games[0].gameDate).toJSON().slice(0, 10).toString();
-        } else {
-            player.lastUpdated = null;
-        }
-
         player.numberFails = 0;
         player.numberOfGames = 0;
         player.overallScore = 0;
@@ -35,9 +25,21 @@
             player.numberOfGames++;
             player.overallScore += game.score;
 
-            if (new Date(game.gameDate).toJSON().slice(0, 10).toString() == date){
+            game.gameDate = new Date(game.gameDate).toJSON().slice(0, 10).toString();
+
+            if (game.gameDate == date){
                 player.todaysScore = game.score;
             }
+        }
+
+        player.games.sort(function(a,b){
+            return new Date(b.gameDate) - new Date(a.gameDate);
+        });
+
+        if (player.games.length > 0){
+            player.lastUpdated = player.games[0].gameDate;
+        } else {
+            player.lastUpdated = null;
         }
             
         let biggestScore = Math.max(...player.scores.map(g => g.count), 0);
@@ -59,9 +61,21 @@
     export let player;
     let scores = [1,2,3,4,5,6,7]
 	let date = new Date().toJSON().slice(0, 10).toString();
+    let forceChangeScore = false;
 
     async function addScore(score) {
-		let game = { playerId: player.player.playerId, score: score, date: new Date().toJSON().slice(0, 10).toString() }
+        if (CheckScore()){
+            await RemoveScore()
+        }
+
+        let game;
+        
+        if (score == 7){
+            game = { playerId: player.player.playerId, score: 7, date: date }
+        } else {
+            game = { playerId: player.player.playerId, score: score, date: date }
+        }
+
 		const resultGame = await fetch(`/api/games`, {method: 'POST', body: JSON.stringify(game), headers: {'Content-Type': 'application/json'}});
 
         if (resultGame.status != 200 ) {
@@ -72,17 +86,32 @@
 		location.reload();
 	};
 
-    const addFailed = async () => {
-		let game = { playerId: player.player.playerId, score: 7, date: new Date().toJSON().slice(0, 10).toString() }
-		const resultGame = await fetch(`/api/games`, {method: 'POST', body: JSON.stringify(game), headers: {'Content-Type': 'application/json'}});
+    function CheckScore() {
+        for (const game of player.games) {
+            if (game.gameDate == date){
+                return true;
+            }
+        }
+
+        return false;
+    };
+
+    async function RemoveScore() {
+        let gameToDelete;
+
+        for (const game of player.games) {
+            if (game.gameDate == date){
+                gameToDelete = game;
+            }
+        }
+
+        const resultGame = await fetch(`/api/games`, {method: 'DELETE', body: JSON.stringify(gameToDelete), headers: {'Content-Type': 'application/json'}});
 
         if (resultGame.status != 200 ) {
             console.log(500, "something wrong with the database");
             return;
         }
-
-		location.reload();
-	};
+    }
 </script>
 
 <svelte:head>
@@ -92,25 +121,28 @@
 <header>{player.player.playerName}</header>
 <a class="backButton" href="/"><IoMdArrowRoundBack/></a>
 <main>
-    {#if player.lastUpdated != date}
+    {#if player.lastUpdated != date || forceChangeScore}
     <p class="subHeader">Enter a score:</p>
     <div class="scoreButtons">
         {#each scores as score}
         {#if score==7}
-        <button class="scoreButton" on:click="{() => addFailed()}">X</button>
+        <button class="scoreButton" on:click="{() => addScore(7)}">X</button>
         {:else}
         <button class="scoreButton" on:click="{() => addScore(score)}">{score}</button>
         {/if}
         {/each}
     </div>
     {:else}
-    <p class="subHeader">Today's Score: {player.todaysScore}</p>
+    <div class="todaysScore">
+        <p class="subHeader">Today's Score: {player.todaysScore}</p>
+        <button class="editScoreButton" on:click="{() => forceChangeScore = true}">Edit</button>
+    </div>
     {/if}
     <p class="subHeader">Stats:</p>
     <div class="overallStats">
         <p>Games: {player.numberOfGames}</p>
         <p>Lost: {player.numberFails}</p>
-        <p>Win %: {((player.numberOfGames - player.numberFails) / player.numberOfGames) * 100}</p>
+        <p>Win %: {parseInt(((player.numberOfGames - player.numberFails) / player.numberOfGames) * 100)}</p>
     </div>
     <p class="subHeader">Guess Distribution:</p>
     <div class="barChart">
@@ -166,6 +198,20 @@
         font-size: 1.25rem;
         padding: 0.5rem 0.75rem;
         background-color: hsl(var(--accent2));
+    }
+
+    .editScoreButton {
+        border-radius: var(--radiusSmall);
+		border: 0px;
+        font-size: var(--small);
+        padding: 0.5rem 0.75rem;
+        background-color: hsl(var(--accent2));
+        text-transform: uppercase;
+    }
+
+    .todaysScore {
+        display: flex;
+        justify-content: space-between;
     }
 
     .subHeader {
