@@ -60,7 +60,8 @@
     import IoMdArrowRoundBack from 'svelte-icons/io/IoMdArrowRoundBack.svelte'
     export let player;
     let scores = [1,2,3,4,5,6,7]
-	let date = new Date().toJSON().slice(0, 10).toString();
+	let date = new Date().toJSON();
+    let dateTime = date.slice(0, 10).toString() + " " + date.slice(11, 19).toString();
     let forceChangeScore = false;
 
     async function addScore(score) {
@@ -71,9 +72,9 @@
         let game;
         
         if (score == 7){
-            game = { playerId: player.player.playerId, score: 7, date: date }
+            game = { playerId: player.player.playerId, score: 7, date: dateTime }
         } else {
-            game = { playerId: player.player.playerId, score: score, date: date }
+            game = { playerId: player.player.playerId, score: score, date: dateTime }
         }
 
 		const resultGame = await fetch(`/api/games`, {method: 'POST', body: JSON.stringify(game), headers: {'Content-Type': 'application/json'}});

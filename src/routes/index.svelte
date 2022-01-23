@@ -26,6 +26,7 @@
 
 					if (new Date(game.gameDate).toJSON().slice(0, 10).toString() == date){
                 		player.todaysScore = game.score;
+						player.todaysTime = new Date(game.gameDate).toJSON().slice(11, 16).toString();
             		}
 				}
 
@@ -158,7 +159,10 @@
 					{:else if player.todaysScore == undefined}
 					<p style="font-style: italic;">-</p>
 					{:else}
-					<p style="font-style: italic;">{player.todaysScore}</p>
+					<div class="dailyScore">
+						<p style="font-style: italic; margin-bottom: 0px">{player.todaysScore}</p>
+						<p class="timeStamp">at {player.todaysTime}</p>
+					</div>
 					{/if}
 				{:else}
 					{#if !isFinite(player.averageScore)}
@@ -271,6 +275,17 @@
 		grid-template-rows: 1fr;
 		justify-items: center;
 		align-items: center;
+	}
+
+	.dailyScore {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.timeStamp {
+		font-size: var(--extraSmall);
+		margin-top: 0.1rem;
 	}
 
 	.players > :global(:nth-child(2) > .playerTitle) {
