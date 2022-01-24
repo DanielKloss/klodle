@@ -90,7 +90,7 @@
 
     function CheckScore() {
         for (const game of player.games) {
-            if (game.gameDate == date){
+            if (game.gameDate.slice(0, 10).toString() == dateTime.slice(0, 10).toString()){
                 return true;
             }
         }
@@ -102,7 +102,7 @@
         let gameToDelete;
 
         for (const game of player.games) {
-            if (game.gameDate == date){
+            if (game.gameDate.slice(0, 10).toString() == dateTime.slice(0, 10).toString()){
                 gameToDelete = game;
             }
         }
