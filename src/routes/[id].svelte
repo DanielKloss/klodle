@@ -38,6 +38,7 @@
 
         if (player.games.length > 0){
             player.lastUpdated = player.games[0].gameDate;
+            console.log(player.games[0].gameDate);
         } else {
             player.lastUpdated = null;
         }
@@ -122,7 +123,7 @@
 <header>{player.player.playerName}</header>
 <a class="backButton" href="/"><IoMdArrowRoundBack/></a>
 <main>
-    {#if player.lastUpdated != date || forceChangeScore}
+    {#if player.lastUpdated != date.slice(0, 10).toString() || forceChangeScore}
     <p class="subHeader">Enter a score:</p>
     <div class="scoreButtons">
         {#each scores as score}
