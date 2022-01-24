@@ -38,7 +38,6 @@
 
         if (player.games.length > 0){
             player.lastUpdated = player.games[0].gameDate;
-            console.log(player.games[0].gameDate);
         } else {
             player.lastUpdated = null;
         }
