@@ -142,7 +142,7 @@
 <div class="details">
 	<p>Dan Kloss</p>
 	<p>{new Date().getFullYear()}</p>
-	<p>Version 1.2</p>
+	<p>Version 1.3</p>
 </div>
 <main>
 	<div class="leaderboardButtons">
