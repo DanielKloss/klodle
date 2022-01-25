@@ -8,8 +8,7 @@ export async function get(request) {
 export async function post(request) {
 	const playerId = request.body.playerId;
 	const score = request.body.score;
-	const date = request.body.date;
-	await insertGame(playerId, score, date);
+	await insertGame(playerId, score);
 
 	return {
 		status: 200

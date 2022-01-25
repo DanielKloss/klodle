@@ -72,9 +72,9 @@
         let game;
         
         if (score == 7){
-            game = { playerId: player.player.playerId, score: 7, date: dateTime }
+            game = { playerId: player.player.playerId, score: 7 }
         } else {
-            game = { playerId: player.player.playerId, score: score, date: dateTime }
+            game = { playerId: player.player.playerId, score: score }
         }
 
 		const resultGame = await fetch(`/api/games`, {method: 'POST', body: JSON.stringify(game), headers: {'Content-Type': 'application/json'}});

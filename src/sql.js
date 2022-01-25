@@ -48,9 +48,9 @@ export async function getGamesFromPlayerId(id) {
 	};
 }
 
-export async function insertGame(playerId, score, date) {
+export async function insertGame(playerId, score) {
     const connection = await getConnection();
-	await connection.query('INSERT INTO games (playerId, score, gameDate) VALUES (?,?,?);', [playerId, score, date]);
+	await connection.query('INSERT INTO games (playerId, score, gameDate) VALUES (?,?,now());', [playerId, score]);
 	connection.end();
 }
 
