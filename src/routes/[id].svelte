@@ -65,9 +65,7 @@
     let forceChangeScore = false;
 
     async function addScore(score) {
-        if (CheckScore()){
-            await RemoveScore()
-        }
+        TryDeleteScore();
 
         let game;
         
@@ -87,32 +85,22 @@
 		location.reload();
 	};
 
-    function CheckScore() {
+    async function TryDeleteScore() {
         for (const game of player.games) {
             if (game.gameDate.slice(0, 10).toString() == dateTime.slice(0, 10).toString()){
-                return true;
+                let gameToDelete = game;
+
+                const resultGame = await fetch(`/api/games`, {method: 'DELETE', body: JSON.stringify(gameToDelete), headers: {'Content-Type': 'application/json'}});
+
+                if (resultGame.status != 200 ) {
+                    console.log(500, "something wrong with the database");
+                    return;
+                }
+
+                return;
             }
         }
-
-        return false;
     };
-
-    async function RemoveScore() {
-        let gameToDelete;
-
-        for (const game of player.games) {
-            if (game.gameDate.slice(0, 10).toString() == dateTime.slice(0, 10).toString()){
-                gameToDelete = game;
-            }
-        }
-
-        const resultGame = await fetch(`/api/games`, {method: 'DELETE', body: JSON.stringify(gameToDelete), headers: {'Content-Type': 'application/json'}});
-
-        if (resultGame.status != 200 ) {
-            console.log(500, "something wrong with the database");
-            return;
-        }
-    }
 </script>
 
 <svelte:head>
