@@ -15,6 +15,7 @@
 
 				player.overallScore = 0;
 				player.numberOfGames = 0;
+				player.numberOfFails = 0;
 				
 				player.scores = [{score: 1, count:0}, {score: 2, count:0}, {score: 3, count:0}, {score: 4, count:0}, {score: 5, count:0}, {score: 6, count:0}, {score: 7, count: 0}]
 
@@ -23,6 +24,10 @@
 
 					player.numberOfGames++;
 					player.overallScore += game.score;
+
+					if (game.score > 6){
+						player.numberOfFails++;
+					}
 
 					if (new Date(game.gameDate).toJSON().slice(0, 10).toString() == date){
                 		player.todaysScore = game.score;
@@ -51,7 +56,7 @@
 	let todaySelected = true;
 	
 	function sortPlayers(a, b) { 
-		let primarySort;
+		let firstSort;
 
 		if (todaySelected) {
 			if(!isFinite(a.todaysScore)) {
@@ -62,7 +67,7 @@
         		return -1;
     		}
 
-			primarySort = a.todaysScore - b.todaysScore;
+			firstSort = a.todaysScore - b.todaysScore;
 		} else {
 			if(!isFinite(a.averageScore)) {
         		return 1;
@@ -72,20 +77,32 @@
         		return -1;
     		}
 			
-			primarySort = a.averageScore - b.averageScore;
+			firstSort = a.averageScore - b.averageScore;
 		}
 
-		if (primarySort != 0){
-			return primarySort;
+		if (firstSort != 0){
+			return firstSort;
 		}
 
-		let secondarySort = b.numberOfGames - a.numberOfGames;
+		let secondSort = b.numberOfGames - a.numberOfGames;
 
-		if (secondarySort != 0){
-			return secondarySort;
+		if (secondSort != 0){
+			return secondSort;
 		}
 
-		return a.numberOfFails - b.numberOfFails;
+		let thirdSort = a.numberOfFails - b.numberOfFails;
+
+		if (thirdSort != 0){
+			return thirdSort;
+		}
+
+		if (a.todaysTime > b.todaysTime){
+			return 1;
+		} else if (b.todaysTime > a.todaysTime) {
+			return -1;
+		}
+
+		return 0;
 	};
 
 	const changeLeaderboard = (today) => {
