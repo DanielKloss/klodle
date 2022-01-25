@@ -185,7 +185,14 @@
 					{#if !isFinite(player.averageScore)}
 					<p style="font-style: italic;">-</p>
 					{:else}
-					<p style="font-style: italic;">{player.averageScore.toFixed(1)}</p>
+					<div class="dailyScore">
+						<p style="font-style: italic; ; margin-bottom: 0px">{player.averageScore.toFixed(1)}</p>
+						{#if player.numberOfGames > 1}
+						<p class="timeStamp">from {player.numberOfGames} games</p>
+						{:else}
+						<p class="timeStamp">from {player.numberOfGames} game</p>
+						{/if}
+					</div>
 					{/if}
 				{/if}
 			</a>
