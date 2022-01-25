@@ -1,6 +1,8 @@
 <script context="module">
 	export async function load ({ fetch }){
 		try {
+			let archievedPlayers = [];
+			let leaderboardPlayers = [];
         	let date = new Date().toJSON().slice(0, 10).toString();
 
 			const playersResult = await fetch('/api/players');
@@ -36,10 +38,26 @@
 				}
 
 				player.averageScore = player.overallScore / player.numberOfGames;
+
+				player.games.sort(function(a,b){
+					return new Date(b.gameDate) - new Date(a.gameDate);
+				});
+
+				const week = 1000 * 60 * 60 * 24 * 7;
+    			const weekAgo = Date.now() - week;
+
+				if (player.games.length > 0){
+					player.lastUpdated = new Date(player.games[0].gameDate).toJSON().slice(0, 10).toString();
+					if (new Date(player.games[0].gameDate) < weekAgo) {
+						archievedPlayers.push(player);
+					} else {
+						leaderboardPlayers.push(player);
+					}
+				}
 			};
 
 			return {
-				props: { players }
+				props: { leaderboardPlayers, archievedPlayers },
 			};
 		} catch (error) {
 			console.log(error);
@@ -50,7 +68,8 @@
 
 <script>
 	import IoMdTrophy from 'svelte-icons/io/IoMdTrophy.svelte';
-	export let players;
+	export let leaderboardPlayers;
+	export let archievedPlayers;
 	let newPlayerName;
 	let error;
 	let todaySelected = true;
@@ -107,16 +126,18 @@
 
 	const changeLeaderboard = (today) => {
 		todaySelected = today;
-		players = [...players.sort(sortPlayers)];
+		leaderboardPlayers = [...leaderboardPlayers.sort(sortPlayers)];
 	};
 
 	const addNewPlayer = async () => {
-		let cleanName = newPlayerName.trim().toLowerCase();
-
-		if (cleanName == "" || cleanName == undefined){
+		if (newPlayerName == "" || newPlayerName == undefined){
 			error = "Please enter your name";
 			return;
-		} else if (players.filter(p => p.playerName == cleanName).length > 0){
+		}
+
+		let cleanName = newPlayerName.trim().toLowerCase();
+
+		if (leaderboardPlayers.filter(p => p.playerName == cleanName).length > 0 || archievedPlayers.filter(p => p.playerName == cleanName).length > 0){
 			error = "Name already taken, please choose another";
 			return;
 		}
@@ -131,7 +152,7 @@
 		location.reload();
 	};
 
-	players = [...players.sort(sortPlayers)];
+	leaderboardPlayers = [...leaderboardPlayers.sort(sortPlayers)];
 </script>
 
 <svelte:head>
@@ -156,18 +177,18 @@
 			<p>Name</p>
 			<p>Score</p>
 		</div>
-		{#each players as player, i}
+		{#each leaderboardPlayers as player, i}
 		<div class="container">
 			<a class="playerTitle" href="/{player.playerId}">
 				{#if i < 3}
-			<div class="trophy">
-				<IoMdTrophy/>
-			</div>
-			{:else}
-			<div class="trophy">
+				<div class="trophy">
+					<IoMdTrophy/>
+				</div>
+				{:else}
+				<div class="trophy">
 
-			</div>
-			{/if}
+				</div>
+				{/if}
 				<p style="font-weight: bold;">{i+1}</p>
 				<p style="text-transform: capitalize;">{player.playerName}</p>
 				{#if todaySelected}
@@ -208,6 +229,29 @@
 		</p>
 		{/if}
 	</div>
+	{#each archievedPlayers as player, i}
+	<div class="container">
+		<a class="archieved" href="/{player.playerId}">
+			<p style="text-transform: capitalize;">{player.playerName}</p>
+			<div class="dailyScore">
+				<p class="lastPlayed">last played</p>
+				<p style="margin-top:0px">{player.lastUpdated}</p>
+			</div>
+			{#if !isFinite(player.averageScore)}
+			<p style="font-style: italic;">-</p>
+			{:else}
+			<div class="dailyScore">
+				<p style="font-style: italic; ; margin-bottom: 0px">{player.averageScore.toFixed(1)}</p>
+				{#if player.numberOfGames > 1}
+				<p class="timeStamp">from {player.numberOfGames} games</p>
+				{:else}
+				<p class="timeStamp">from {player.numberOfGames} game</p>
+				{/if}
+			</div>
+			{/if}
+		</a>
+	</div>
+	{/each}
 </main>
 
 <style>
@@ -273,6 +317,7 @@
 		display: flex;
 		justify-content: center;
 		gap: 0.5rem;
+		margin-bottom: 0.5rem;
 	}
 
 	.error {
@@ -301,6 +346,17 @@
 		align-items: center;
 	}
 
+	.archieved {
+		flex: 1;
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		grid-template-rows: 1fr;
+		justify-items: center;
+		align-items: center;
+		background-color: lightgrey;
+		border-radius: var(--radiusLarge);
+	}
+
 	.dailyScore {
 		display: flex;
 		flex-direction: column;
@@ -310,6 +366,11 @@
 	.timeStamp {
 		font-size: var(--extraSmall);
 		margin-top: 0.1rem;
+	}
+
+	.lastPlayed {
+		font-size: var(--extraSmall);
+		margin-bottom: 0.1rem;
 	}
 
 	.players > :global(:nth-child(2) > .playerTitle) {
