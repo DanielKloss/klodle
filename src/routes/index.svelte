@@ -90,15 +90,15 @@
 
 			firstSort = a.todaysScore - b.todaysScore;
 		} else {
-			if(!isFinite(a.averageScore)) {
+			if(!isFinite(a.averageScore.toFixed(1))) {
         		return 1;
     		}
 		
-    		if(!isFinite(b.averageScore)) {
+    		if(!isFinite(b.averageScore.toFixed(1))) {
         		return -1;
     		}
 			
-			firstSort = a.averageScore - b.averageScore;
+			firstSort = a.averageScore.toFixed(1) - b.averageScore.toFixed(1);
 		}
 
 		if (firstSort != 0){
