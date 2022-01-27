@@ -53,6 +53,8 @@
 					} else {
 						leaderboardPlayers.push(player);
 					}
+				} else {
+					leaderboardPlayers.push(player);
 				}
 			};
 
