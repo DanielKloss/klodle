@@ -346,6 +346,7 @@
 		grid-template-rows: 1fr;
 		justify-items: center;
 		align-items: center;
+		text-align: center;
 	}
 
 	.archieved {
