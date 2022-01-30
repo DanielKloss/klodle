@@ -1,116 +1,60 @@
 <script context="module">
-	export async function load ({ fetch, params }){
-        let date = new Date().toJSON().slice(0, 10).toString();
+	export async function load({ stuff, params }){
+        let player = stuff.leaderboardPlayers.find(p => p.playerId == params.id) != undefined ? stuff.leaderboardPlayers.find(p => p.playerId == params.id) : stuff.archievedPlayers.find(p => p.playerId == params.id);
 
-        const playerResult = await fetch(`/api/players?id=${params.id}`);
-        const player = await playerResult.json();
-
-        const gamesResult = await fetch(`/api/games?id=${params.id}`);
-		const games = await gamesResult.json();
-
-        player.games = games.games;
-
-        player.numberFails = 0;
-        player.numberOfGames = 0;
-        player.overallScore = 0;
-		player.scores = [{score: 1, count:0}, {score: 2, count:0}, {score: 3, count:0}, {score: 4, count:0}, {score: 5, count:0}, {score: 6, count:0}, {score: 7, count: 0}]
-
-        for (const game of player.games){
-            player.scores.find(s => s.score == game.score).count++;
-
-            if (game.score > 6) {
-                player.numberFails++;
-            }
-
-            player.numberOfGames++;
-            player.overallScore += game.score;
-
-            game.gameDate = new Date(game.gameDate).toJSON().slice(0, 10).toString();
-
-            if (game.gameDate == date){
-                player.todaysScore = game.score;
-            }
-        }
-
-        player.games.sort(function(a,b){
-            return new Date(b.gameDate) - new Date(a.gameDate);
-        });
-
-        if (player.games.length > 0){
-            player.lastUpdated = player.games[0].gameDate;
-        } else {
-            player.lastUpdated = null;
-        }
-            
-        let biggestScore = Math.max(...player.scores.map(g => g.count), 0);
-
-        for (const score of player.scores) {
-            score.percentage = (Math.round(score.count / biggestScore * 100));
-        }
-
-        return {
-            props:{
-                player
-            }
-        };
-    }
+		return {
+			props: {
+				player,
+                todaysDate: stuff.todaysDate
+			}
+		};
+	}
 </script>
 
 <script>
+    import IoMdCreate from 'svelte-icons/io/IoMdCreate.svelte'
     import IoMdArrowRoundBack from 'svelte-icons/io/IoMdArrowRoundBack.svelte'
+    import AddPlayer from '$lib/components/addPlayer.svelte';
+
     export let player;
+    export let todaysDate;
+
     let scores = [1,2,3,4,5,6,7]
-	let date = new Date().toJSON();
-    let dateTime = date.slice(0, 10).toString() + " " + date.slice(11, 19).toString();
     let forceChangeScore = false;
+    let editPlayerName = false;
 
     async function addScore(score) {
-        TryDeleteScore();
+        let playerGame = { player, score }
 
-        let game;
-        
-        if (score == 7){
-            game = { playerId: player.player.playerId, score: 7 }
-        } else {
-            game = { playerId: player.player.playerId, score: score }
-        }
+		const resultGame = await fetch('/api/games', {method: 'POST', body: JSON.stringify(playerGame), headers: {'Content-Type': 'application/json'}});
 
-		const resultGame = await fetch(`/api/games`, {method: 'POST', body: JSON.stringify(game), headers: {'Content-Type': 'application/json'}});
+        console.log(resultGame);
 
         if (resultGame.status != 200 ) {
             console.log(500, "something wrong with the database");
             return;
         }
 
-		location.reload();
+        location.reload();
 	};
-
-    async function TryDeleteScore() {
-        for (const game of player.games) {
-            if (game.gameDate.slice(0, 10).toString() == dateTime.slice(0, 10).toString()){
-                let gameToDelete = game;
-
-                const resultGame = await fetch(`/api/games`, {method: 'DELETE', body: JSON.stringify(gameToDelete), headers: {'Content-Type': 'application/json'}});
-
-                if (resultGame.status != 200 ) {
-                    console.log(500, "something wrong with the database");
-                    return;
-                }
-
-                return;
-            }
-        }
-    };
 </script>
 
 <svelte:head>
-	<title>Klodle - {player.player.playerName}</title>
+	<title>Klodle - {player.playerName}</title>
 </svelte:head>
 
-<header>{player.player.playerName}</header>
 <a class="backButton" href="/"><IoMdArrowRoundBack/></a>
-<main>
-    {#if player.lastUpdated != date.slice(0, 10).toString() || forceChangeScore}
+<div class="section spaceBetween">
+    {#if editPlayerName}
+        <AddPlayer currentPlayerName={player.playerName} buttonText="change" placeholder={"Change Player's Name"}/>
+    {:else}
+        <p class="playerName">{player.playerName}</p>
+        <div class="editButton" on:click="{() => editPlayerName = true}"><IoMdCreate/></div>
+    {/if}
+</div>
+
+<div class="section">
+    {#if player.lastUpdated != todaysDate || forceChangeScore}
     <p class="subHeader">Enter a score:</p>
     <div class="scoreButtons">
         {#each scores as score}
@@ -122,45 +66,39 @@
         {/each}
     </div>
     {:else}
-    <div class="todaysScore">
-        <p class="subHeader">Today's Score: {player.todaysScore}</p>
-        <button class="editScoreButton" on:click="{() => forceChangeScore = true}">Edit</button>
+    <div class="spaceBetween">
+        <p class="score">Today's Score: {player.todaysScore}</p>
+        <div class="editButton" on:click="{() => forceChangeScore = true}"><IoMdCreate/></div>
     </div>
     {/if}
+</div>
+<div class="section">
     <p class="subHeader">Stats:</p>
     <div class="overallStats">
         <p>Games: {player.numberOfGames}</p>
-        <p>Lost: {player.numberFails}</p>
-        <p>Win %: {parseInt(((player.numberOfGames - player.numberFails) / player.numberOfGames) * 100)}</p>
+        <p>Lost: {player.numberOfFails}</p>
+        <p>Win %: {parseInt(((player.numberOfGames - player.numberOfFails) / player.numberOfGames) * 100)}</p>
     </div>
+</div>
+<div class="section">
     <p class="subHeader">Guess Distribution:</p>
     <div class="barChart">
-        {#each player.scores as score, i}
-        {#if i == 6}
-        <div class="barLabel">X</div>
-        <div class="bar" style="width:{score.percentage}%;">{score.count}</div>
-        {:else}
-        <div class="barLabel">{i+1}</div>
-        <div class="bar" style="width:{score.percentage}%;">{score.count}</div>
-        {/if}
-        {/each}
+    {#each player.scores as score, i}
+    {#if i == 6}
+    <div class="barLabel">X</div>
+    <div class="bar" style="width:{score.percentage}%;">{score.count}</div>
+    {:else}
+    <div class="barLabel">{i+1}</div>
+    <div class="bar" style="width:{score.percentage}%;">{score.count}</div>
+    {/if}
+    {/each}
     </div>
-</main>
+</div>
 
 <style>
     p {
-        margin: 0.5rem;
+        margin: 0;
     }
-
-    header {
-		text-transform: uppercase;
-		text-align: center;
-		font-size: var(--extraLarge);
-		font-weight: bold;
-		margin-bottom: 1rem;
-		background-color: hsl(var(--accent1));
-		padding: 0.5rem 0;
-	}
 
     .backButton {
 		position:absolute;
@@ -171,10 +109,39 @@
         height: 32px;
 	}
 
-    main{
-		width: 80%;
-		margin: 0 auto;
-	}
+    .section {
+        margin-top: 1rem;
+        padding: 0.5rem;
+        background-color: hsl(var(--accent2));
+        border-radius: var(--radiusLarge);
+    }
+
+    .spaceBetween {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .playerName {
+        font-size: var(--extraLarge);
+        text-transform: capitalize;
+        color: black;
+        text-align: center;
+        background-color: hsl(var(--accent2));
+        border-radius: var(--radiusSmall);
+        padding: 0.25rem 1rem;
+    }
+
+    .editButton {
+        color: lightslategray;
+        width: 24px;
+        height: 24px;
+    }
+
+    .score {
+        font-weight: bold;
+        font-size: var(--large);
+    }
 
     .scoreButtons {
         display: flex;
@@ -186,26 +153,14 @@
 		border: 0px;
         font-size: 1.25rem;
         padding: 0.5rem 0.75rem;
-        background-color: hsl(var(--accent2));
-    }
-
-    .editScoreButton {
-        border-radius: var(--radiusSmall);
-		border: 0px;
-        font-size: var(--small);
-        padding: 0.5rem 0.75rem;
-        background-color: hsl(var(--accent2));
-        text-transform: uppercase;
-    }
-
-    .todaysScore {
-        display: flex;
-        justify-content: space-between;
+        background-color: hsl(var(--accent1));
+        color: white;
     }
 
     .subHeader {
         font-weight: bold;
-        font-size: 1.25rem;
+        font-size: var(--large);
+        margin-bottom: 0.5rem;
     }
 
     .overallStats {
@@ -227,10 +182,7 @@
 	.barChart{
 		display: grid;
 		grid-template-columns: auto 1fr;
+        grid-template-rows: auto repeat(auto);
 		gap:0.25rem;
-        margin-top: 1rem;
-        padding: 0.5rem;
-        background-color: hsl(var(--accent2));
-        border-radius: var(--radiusLarge);
 	}
 </style>

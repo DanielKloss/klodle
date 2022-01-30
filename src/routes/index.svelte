@@ -1,294 +1,38 @@
 <script context="module">
-	export async function load ({ fetch }){
-		try {
-			let archievedPlayers = [];
-			let leaderboardPlayers = [];
-        	let date = new Date().toJSON().slice(0, 10).toString();
-
-			const playersResult = await fetch('/api/players');
-			const playersBody = await playersResult.json();
-			const players = playersBody.players;
-
-			for (const player of players) {
-				const gamesResult = await fetch(`/api/games?id=${player.playerId}`);
-				const gamesBody = await gamesResult.json();
-				
-				player.games = gamesBody.games;
-
-				player.overallScore = 0;
-				player.numberOfGames = 0;
-				player.numberOfFails = 0;
-				
-				player.scores = [{score: 1, count:0}, {score: 2, count:0}, {score: 3, count:0}, {score: 4, count:0}, {score: 5, count:0}, {score: 6, count:0}, {score: 7, count: 0}]
-
-				for (const game of player.games){
-					player.scores.find(s => s.score == game.score).count++;
-
-					player.numberOfGames++;
-					player.overallScore += game.score;
-
-					if (game.score > 6){
-						player.numberOfFails++;
-					}
-
-					if (new Date(game.gameDate).toJSON().slice(0, 10).toString() == date){
-                		player.todaysScore = game.score;
-						player.todaysTime = new Date(game.gameDate).toJSON().slice(11, 16).toString();
-            		}
-				}
-
-				player.averageScore = player.overallScore / player.numberOfGames;
-
-				player.games.sort(function(a,b){
-					return new Date(b.gameDate) - new Date(a.gameDate);
-				});
-
-				const week = 1000 * 60 * 60 * 24 * 7;
-    			const weekAgo = Date.now() - week;
-
-				if (player.games.length > 0){
-					player.lastUpdated = new Date(player.games[0].gameDate).toJSON().slice(0, 10).toString();
-					if (new Date(player.games[0].gameDate) < weekAgo) {
-						archievedPlayers.push(player);
-					} else {
-						leaderboardPlayers.push(player);
-					}
-				} else {
-					leaderboardPlayers.push(player);
-				}
-			};
-
-			return {
-				props: { leaderboardPlayers, archievedPlayers },
-			};
-		} catch (error) {
-			console.log(error);
-			return error;
-		}
-	};
+	export async function load({ stuff }){
+		return {
+			props: {
+				leaderboardPlayers: stuff.leaderboardPlayers,
+				archievedPlayers: stuff.archievedPlayers
+			}
+		};
+	}
 </script>
 
 <script>
-	import IoMdTrophy from 'svelte-icons/io/IoMdTrophy.svelte';
+	import AddPlayer from "$lib/components/addPlayer.svelte";
+	import Archieve from "$lib/components/archieve.svelte";
+	import Leaderboard from "$lib/components/leaderboard.svelte";
+	import { todaySelected } from "$lib/stores/leaderboardState.js";
+
 	export let leaderboardPlayers;
 	export let archievedPlayers;
-	let newPlayerName;
-	let error;
-	let todaySelected = true;
-	
-	function sortPlayers(a, b) { 
-		let firstSort;
-
-		if (todaySelected) {
-			if(!isFinite(a.todaysScore)) {
-        		return 1;
-    		}
-		
-    		if(!isFinite(b.todaysScore)) {
-        		return -1;
-    		}
-
-			firstSort = a.todaysScore - b.todaysScore;
-		} else {
-			if(!isFinite(a.averageScore.toFixed(1))) {
-        		return 1;
-    		}
-		
-    		if(!isFinite(b.averageScore.toFixed(1))) {
-        		return -1;
-    		}
-			
-			firstSort = a.averageScore.toFixed(1) - b.averageScore.toFixed(1);
-		}
-
-		if (firstSort != 0){
-			return firstSort;
-		}
-
-		let secondSort = b.numberOfGames - a.numberOfGames;
-
-		if (secondSort != 0){
-			return secondSort;
-		}
-
-		let thirdSort = a.numberOfFails - b.numberOfFails;
-
-		if (thirdSort != 0){
-			return thirdSort;
-		}
-
-		if (a.todaysTime > b.todaysTime){
-			return 1;
-		} else if (b.todaysTime > a.todaysTime) {
-			return -1;
-		}
-
-		return 0;
-	};
-
-	const changeLeaderboard = (today) => {
-		todaySelected = today;
-		leaderboardPlayers = [...leaderboardPlayers.sort(sortPlayers)];
-	};
-
-	const addNewPlayer = async () => {
-		if (newPlayerName == "" || newPlayerName == undefined){
-			error = "Please enter your name";
-			return;
-		}
-
-		let cleanName = newPlayerName.trim().toLowerCase();
-
-		if (leaderboardPlayers.filter(p => p.playerName == cleanName).length > 0 || archievedPlayers.filter(p => p.playerName == cleanName).length > 0){
-			error = "Name already taken, please choose another";
-			return;
-		}
-
-		const resultPlayer = await fetch(`/api/players`, {method: 'POST', body: JSON.stringify(cleanName), headers: {'Content-Type': 'application/json'}});
-
-        if (resultPlayer.status != 200 ) {
-            console.log(500, "something wrong with the database");
-            return;
-        }
-
-		location.reload();
-	};
-
-	leaderboardPlayers = [...leaderboardPlayers.sort(sortPlayers)];
 </script>
 
 <svelte:head>
 	<title>Klodle</title>
 </svelte:head>
 
-<header>Klodle</header>
-<div class="details">
-	<p>Dan Kloss</p>
-	<p>{new Date().getFullYear()}</p>
-	<p>Version 1.3</p>
+<div class="leaderboardButtons">
+	<button on:click="{() => todaySelected.set(true)}" class="leaderboardButton" class:selectedLeaderboardButton="{$todaySelected}">Today's Scores</button>
+	<button on:click="{() => todaySelected.set(false)}" class="leaderboardButton" class:selectedLeaderboardButton="{!$todaySelected}">Overall Scores</button>
 </div>
-<main>
-	<div class="leaderboardButtons">
-		<button on:click="{() => changeLeaderboard(true)}" class="leaderboardButton" class:selectedLeaderboardButton="{todaySelected}">Today's Scores</button>
-		<button on:click="{() => changeLeaderboard(false)}" class="leaderboardButton" class:selectedLeaderboardButton="{!todaySelected}">Overall Scores</button>
-	</div>
-	<div class="players">
-		<div class="tableTitle">
-			<div class="trophy"></div>
-			<p>Pos.</p>
-			<p>Name</p>
-			<p>Score</p>
-		</div>
-		{#each leaderboardPlayers as player, i}
-		<div class="container">
-			<a class="playerTitle" href="/{player.playerId}">
-				{#if i < 3}
-				<div class="trophy">
-					<IoMdTrophy/>
-				</div>
-				{:else}
-				<div class="trophy">
 
-				</div>
-				{/if}
-				<p style="font-weight: bold;">{i+1}</p>
-				<p style="text-transform: capitalize;">{player.playerName}</p>
-				{#if todaySelected}
-					{#if player.todaysScore == 7}
-					<p style="font-style: italic;">X</p>
-					{:else if player.todaysScore == undefined}
-					<p style="font-style: italic;">-</p>
-					{:else}
-					<div class="dailyScore">
-						<p style="font-style: italic; margin-bottom: 0px">{player.todaysScore}</p>
-						<p class="timeStamp">at {player.todaysTime}</p>
-					</div>
-					{/if}
-				{:else}
-					{#if !isFinite(player.averageScore)}
-					<p style="font-style: italic;">-</p>
-					{:else}
-					<div class="dailyScore">
-						<p style="font-style: italic; ; margin-bottom: 0px">{player.averageScore.toFixed(1)}</p>
-						{#if player.numberOfGames > 1}
-						<p class="timeStamp">from {player.numberOfGames} games</p>
-						{:else}
-						<p class="timeStamp">from {player.numberOfGames} game</p>
-						{/if}
-					</div>
-					{/if}
-				{/if}
-			</a>
-		</div>
-		{/each}
-		<div class="addPlayer">
-			<input placeholder="New Player's Username" class="addPlayerText" bind:value={newPlayerName}/>
-			<button class="addPlayerButton" on:click="{() => addNewPlayer()}">Add</button>
-		</div>
-		{#if error != undefined}
-		<p class="container error">
-			{error}
-		</p>
-		{/if}
-	</div>
-	{#each archievedPlayers as player, i}
-	<div class="container">
-		<a class="archieved" href="/{player.playerId}">
-			<p style="text-transform: capitalize;">{player.playerName}</p>
-			<div class="dailyScore">
-				<p class="lastPlayed">last played</p>
-				<p style="margin-top:0px">{player.lastUpdated}</p>
-			</div>
-			{#if !isFinite(player.averageScore)}
-			<p style="font-style: italic;">-</p>
-			{:else}
-			<div class="dailyScore">
-				<p style="font-style: italic; ; margin-bottom: 0px">{player.averageScore.toFixed(1)}</p>
-				{#if player.numberOfGames > 1}
-				<p class="timeStamp">from {player.numberOfGames} games</p>
-				{:else}
-				<p class="timeStamp">from {player.numberOfGames} game</p>
-				{/if}
-			</div>
-			{/if}
-		</a>
-	</div>
-	{/each}
-</main>
+<Leaderboard {leaderboardPlayers}/>
+<AddPlayer buttonText="add" placeholder="New Player's Name"/>
+<Archieve {archievedPlayers}/>
 
 <style>
-	a { 
-		text-decoration: none;
-		color: black;
-	}
-
-	main{
-		width: 80%;
-		margin: 0 auto;
-		margin-top: 1rem;
-	}
-
-	header {
-		text-transform: uppercase;
-		text-align: center;
-		font-size: var(--extraLarge);
-		font-weight: bold;
-		background-color: hsl(var(--accent1));
-		padding: 0.5rem 0;
-	}
-
-	.details {
-		position:absolute;
-		top: 0px;
-		right: 0px;
-		font-size: var(--extraSmall);
-		color: white;
-		line-height: 0;
-		text-align: right;
-		border-left: white 0.1rem solid;
-		padding: 0.4rem;
-	}
-
 	.leaderboardButtons {
 		display: flex;
 		justify-content: space-around;
@@ -306,109 +50,5 @@
 
 	.selectedLeaderboardButton {
 		border-bottom: 0.2rem solid hsl(var(--accent1));
-	}
-
-	.container {
-		display: flex;
-		margin-bottom: 0.5rem;
-		align-items: center;
-		gap: 0.5rem;
-	}
-
-	.addPlayer {
-		display: flex;
-		justify-content: center;
-		gap: 0.5rem;
-		margin-bottom: 0.5rem;
-	}
-
-	.error {
-		text-align: center;
-		justify-content: center;
-		color: hsl(var(--accent1));
-	}
-
-	.tableTitle {
-		display: grid;
-		grid-template-columns: auto repeat(3, 1fr);
-		justify-items: center;
-		align-items: stretch;
-		font-size: 0.7rem;
-		border-radius: var(--radiusLarge);
-		background-color: hsl(var(--accent2));
-		margin-bottom: 0.5rem;
-	}
-
-	.playerTitle {
-		flex: 1;
-		display: grid;
-		grid-template-columns: auto repeat(3, 1fr);
-		grid-template-rows: 1fr;
-		justify-items: center;
-		align-items: center;
-		text-align: center;
-	}
-
-	.archieved {
-		flex: 1;
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		grid-template-rows: 1fr;
-		justify-items: center;
-		align-items: center;
-		background-color: lightgrey;
-		border-radius: var(--radiusLarge);
-	}
-
-	.dailyScore {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-	}
-
-	.timeStamp {
-		font-size: var(--extraSmall);
-		margin-top: 0.1rem;
-	}
-
-	.lastPlayed {
-		font-size: var(--extraSmall);
-		margin-bottom: 0.1rem;
-	}
-
-	.players > :global(:nth-child(2) > .playerTitle) {
-  		background-color: #FFE764;
-		border-radius: var(--radiusLarge);
-	}
-	
-	.players > :global(:nth-child(3) > .playerTitle) {
-  		background-color: #EEEEEE;
-		border-radius: var(--radiusLarge);
-	}
-	
-	.players > :global(:nth-child(4) > .playerTitle) {
-  		background-color: #FFC48B;
-		border-radius: var(--radiusLarge);
-	}
-
-	.trophy {
-		width: 20px;
-		height: 20px;
-		margin-left: 1rem;
-	}
-
-	.addPlayerButton {
-		border-radius: var(--radiusSmall);
-		border: 0px;
-		text-transform: uppercase;
-        font-size: var(--large);
-        padding: 0.5rem 0.75rem;
-        background-color: hsl(var(--accent1));
-		color: white;
-	}
-
-	.addPlayerText {
-		border-radius: var(--radiusLarge);
-		padding-left: 1rem;
 	}
 </style>

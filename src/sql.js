@@ -60,6 +60,12 @@ export async function insertPlayer(playerName) {
 	connection.end();
 }
 
+export async function updatePlayer(player) {
+	const connection = await getConnection();
+	await connection.query('UPDATE players SET playerName = ? WHERE playerId = ?;', [player.playerName, player.playerId]);
+	connection.end();
+}
+
 export async function deleteGame(gameId) {
 	const connection = await getConnection();
 	await connection.query('DELETE FROM games WHERE gameId = ?;', [gameId]);
