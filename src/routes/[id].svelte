@@ -14,6 +14,7 @@
 <script>
     import IoMdCreate from 'svelte-icons/io/IoMdCreate.svelte'
     import IoMdArrowRoundBack from 'svelte-icons/io/IoMdArrowRoundBack.svelte'
+    import IoMdTrophy from 'svelte-icons/io/IoMdTrophy.svelte';
     import AddPlayer from '$lib/components/addPlayer.svelte';
 
     export let player;
@@ -73,8 +74,31 @@
     {/if}
 </div>
 <div class="section">
+    <p class="subHeader">Daily Trophies:</p>
+    <div class="row-evenly">
+        <div class="trophySection gold">
+            <div class="trophy">
+                <IoMdTrophy />
+            </div>
+            <p class="trophyCount">{player.dailyGold}</p>
+        </div>
+        <div class="trophySection silver">
+            <div class="trophy">
+                <IoMdTrophy />
+            </div>
+            <p class="trophyCount">{player.dailySilver}</p>
+        </div>
+        <div class="trophySection bronze">
+            <div class="trophy">
+                <IoMdTrophy />
+            </div>
+            <p class="trophyCount">{player.dailyBronze}</p>
+        </div>
+    </div>
+</div>
+<div class="section">
     <p class="subHeader">Stats:</p>
-    <div class="overallStats">
+    <div class="row-between">
         <p>Games: {player.numberOfGames}</p>
         <p>Lost: {player.numberOfFails}</p>
         <p>Win %: {parseInt(((player.numberOfGames - player.numberOfFails) / player.numberOfGames) * 100)}</p>
@@ -108,6 +132,23 @@
         width: 32px;
         height: 32px;
 	}
+
+    .trophySection {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        border-radius: var(--radiusLarge);
+        padding: 0.25rem 1rem;
+    }
+
+    .trophy {
+		width: 32px;
+		height: 32px;
+	}
+
+    .trophyCount {
+        font-size: var(--large);
+    }
 
     .section {
         margin-top: 1rem;
@@ -163,9 +204,14 @@
         margin-bottom: 0.5rem;
     }
 
-    .overallStats {
+    .row-between {
         display: flex;
         justify-content: space-between;
+    }
+
+    .row-evenly {
+        display: flex;
+        justify-content: space-evenly;
     }
 
     .barLabel{
@@ -184,5 +230,17 @@
 		grid-template-columns: auto 1fr;
         grid-template-rows: auto repeat(auto);
 		gap:0.25rem;
+	}
+
+    .gold {
+  		background-color: #FFE764;
+	}
+	
+	.silver {
+  		background-color: #EEEEEE;
+	}
+	
+	.bronze {
+  		background-color: #FFC48B;
 	}
 </style>

@@ -10,49 +10,48 @@
 
     function sortPlayers(a, b) { 
 		let firstSort;
+        let secondSort;
 
 		if ($todaySelected) {
-			if(!isFinite(a.todaysScore)) {
+			if(!isFinite(a.todaysScore) && isFinite(b.todaysScore)) {
         		return 1;
     		}
 		
-    		if(!isFinite(b.todaysScore)) {
+    		if(!isFinite(b.todaysScore) && isFinite(a.todaysScore)) {
         		return -1;
     		}
 
 			firstSort = a.todaysScore - b.todaysScore;
+
+            if (firstSort != 0){
+                return firstSort;
+            }
+
+            if (a.todaysTime > b.todaysTime){
+			    return 1;
+		    } else if (b.todaysTime > a.todaysTime) {
+			    return -1;
+		    }
 		} else {
-			if(!isFinite(a.averageScore.toFixed(1))) {
+			if(!isFinite(a.averageScore.toFixed(1)) && isFinite(b.averageScore.toFixed(1))) {
         		return 1;
     		}
 		
-    		if(!isFinite(b.averageScore.toFixed(1))) {
+    		if(!isFinite(b.averageScore.toFixed(1)) && isFinite(a.averageScore.toFixed(1))) {
         		return -1;
     		}
 			
 			firstSort = a.averageScore.toFixed(1) - b.averageScore.toFixed(1);
-		}
 
-		if (firstSort != 0){
-			return firstSort;
-		}
+            if (firstSort != 0){
+                return firstSort;
+            }
 
-		let secondSort = b.numberOfGames - a.numberOfGames;
+            secondSort = b.numberOfGames - a.numberOfGames;
 
-		if (secondSort != 0){
-			return secondSort;
-		}
-
-		let thirdSort = a.numberOfFails - b.numberOfFails;
-
-		if (thirdSort != 0){
-			return thirdSort;
-		}
-
-		if (a.todaysTime > b.todaysTime){
-			return 1;
-		} else if (b.todaysTime > a.todaysTime) {
-			return -1;
+            if (secondSort != 0){
+                return secondSort;
+            }
 		}
 
 		return 0;
@@ -110,9 +109,9 @@
     </a>
     {/each}
     {#if $todaySelected}
-    <p class="sortedExplanation"><b>Sorted by: 1)</b> Score <b>2)</b> Time Completed <b>3)</b> Number of Fails</p>
+    <p class="sortedExplanation">Sorted by: <b>Score</b> then by <b>Time Completed</b></p>
     {:else}
-    <p class="sortedExplanation"><b>Sorted by: 1)</b> Score <b>2)</b> Games Completed <b>3)</b> Number of Fails</p>
+    <p class="sortedExplanation">Sorted by: <b>Score</b> then by <b>Games Completed</b></p>
     {/if}
 </div>
 

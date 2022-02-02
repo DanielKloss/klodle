@@ -13,7 +13,7 @@ async function getConnection() {
 export async function getAllPlayers() {
     const connection = await getConnection();
 	const rows = await connection.query(
-		'SELECT playerId, playerName FROM players;'
+		'SELECT playerId, playerName, dailyGold, dailySilver, dailyBronze FROM players;'
     );
     const players = rows[0];
 	connection.end();
@@ -56,7 +56,7 @@ export async function insertGame(playerId, score) {
 
 export async function insertPlayer(playerName) {
 	const connection = await getConnection();
-	await connection.query('INSERT INTO players (playerName) VALUES (?);', [playerName]);
+	await connection.query('INSERT INTO players (playerName, dailyGold, dailySilver, dailyBronze) VALUES (?,0,0,0);', [playerName]);
 	connection.end();
 }
 
