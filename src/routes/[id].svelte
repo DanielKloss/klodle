@@ -75,6 +75,7 @@
 </div>
 <div class="section">
     <p class="subHeader">Daily Trophies:</p>
+    <p class="betaMessage">BETA - Please report any erorrs or discrepancies to Dan</p>
     <div class="row-evenly">
         <div class="trophySection gold">
             <div class="trophy">
@@ -120,6 +121,16 @@
 </div>
 
 <style>
+    .betaMessage {
+        font-size: var(--extraSmall);
+        text-align: center;
+        margin-bottom: 0.5rem;
+        padding: 0.25rem;
+        background-color: hsl(var(--accent1));
+        color: white;
+        border-radius: var(--radiusSmall);
+    }
+
     p {
         margin: 0;
     }
