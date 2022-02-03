@@ -109,9 +109,9 @@ import AddPlayer from './addPlayer.svelte';
             {/if}
         {/if}
         <div class="trophySection">
-            <div class="trophyCount gold">{player.dailyGold}</div>
-            <div class="trophyCount silver">{player.dailySilver}</div>
-            <div class="trophyCount bronze">{player.dailyBronze}</div>
+            <div class="trophyCount gold"><p>{player.dailyGold}</p></div>
+            <div class="trophyCount silver"><p>{player.dailySilver}</p></div>
+            <div class="trophyCount bronze"><p>{player.dailyBronze}</p></div>
         </div>
     </a>
     {/each}
@@ -197,10 +197,12 @@ import AddPlayer from './addPlayer.svelte';
     }
 
     .trophyCount {
-        font-size: var(--extraSmall);
-        height: var(--small);
-        width: var(--small);
-        text-align: center;
+        font-size: var(--small);
+        height: 20px;
+        width: 20px;
         border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 </style>
