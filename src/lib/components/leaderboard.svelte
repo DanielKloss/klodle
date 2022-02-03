@@ -1,6 +1,7 @@
 <script>
 	import IoMdTrophy from 'svelte-icons/io/IoMdTrophy.svelte';
 	import { todaySelected } from "$lib/stores/leaderboardState.js";
+import AddPlayer from './addPlayer.svelte';
     
     let trophyClasses = ["gold", "silver", "bronze"];
 
@@ -66,6 +67,7 @@
         <p>Pos.</p>
         <p>Name</p>
         <p>Score</p>
+        <p>Trophies</p>
     </div>
     {#each leaderboardPlayers as player, i}
     <a class="player {trophyClasses[i]}" href="/{player.playerId}">
@@ -106,6 +108,11 @@
             </div>
             {/if}
         {/if}
+        <div class="trophySection">
+            <div class="trophyCount gold">{player.dailyGold}</div>
+            <div class="trophyCount silver">{player.dailySilver}</div>
+            <div class="trophyCount bronze">{player.dailyBronze}</div>
+        </div>
     </a>
     {/each}
     {#if $todaySelected}
@@ -118,7 +125,7 @@
 <style>
 	.tableTitle {
 		display: grid;
-		grid-template-columns: auto repeat(3, 1fr);
+		grid-template-columns: auto repeat(4, 1fr);
 		justify-items: center;
 		align-items: stretch;
 		font-size: 0.7rem;
@@ -132,9 +139,10 @@
 		color: black;
 		margin-bottom: 0.5rem;
 		display: grid;
-		grid-template-columns: auto repeat(3, 1fr);
+		grid-template-columns: auto repeat(4, 1fr);
 		align-items: center;
 		text-align: center;
+		border-radius: var(--radiusLarge);
     }
 
     .position {
@@ -163,21 +171,36 @@
 
     .gold {
   		background-color: #FFE764;
-		border-radius: var(--radiusLarge);
 	}
 	
 	.silver {
   		background-color: #EEEEEE;
-		border-radius: var(--radiusLarge);
 	}
 	
 	.bronze {
   		background-color: #FFC48B;
-		border-radius: var(--radiusLarge);
 	}
 
     .sortedExplanation {
         font-size: var(--extraSmall);
         text-align: center;
+    }
+
+    .trophySection {
+        display: flex;
+        justify-content: center;
+        background-color: hsl(var(--accent1));
+        padding: 0.25rem;
+        border-radius: var(--radiusLarge);
+        margin-right: 0.25rem;
+        gap: 0.25rem;
+    }
+
+    .trophyCount {
+        font-size: var(--extraSmall);
+        height: var(--small);
+        width: var(--small);
+        text-align: center;
+        border-radius: 50%;
     }
 </style>
