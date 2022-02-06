@@ -14,7 +14,7 @@
 <script>
     import IoMdCreate from 'svelte-icons/io/IoMdCreate.svelte'
     import IoMdArrowRoundBack from 'svelte-icons/io/IoMdArrowRoundBack.svelte'
-    import IoMdTrophy from 'svelte-icons/io/IoMdTrophy.svelte';
+    import FaMedal from 'svelte-icons/fa/FaMedal.svelte'
     import AddPlayer from '$lib/components/addPlayer.svelte';
 
     export let player;
@@ -74,24 +74,23 @@
     {/if}
 </div>
 <div class="section">
-    <p class="subHeader">Daily Trophies:</p>
-    <p class="betaMessage">BETA - Please report any erorrs or discrepancies to Dan</p>
+    <p class="subHeader">Daily Medals:</p>
     <div class="row-evenly">
         <div class="trophySection gold">
             <div class="trophy">
-                <IoMdTrophy />
+                <FaMedal />
             </div>
             <p class="trophyCount">{player.dailyGold}</p>
         </div>
         <div class="trophySection silver">
             <div class="trophy">
-                <IoMdTrophy />
+                <FaMedal />
             </div>
             <p class="trophyCount">{player.dailySilver}</p>
         </div>
         <div class="trophySection bronze">
             <div class="trophy">
-                <IoMdTrophy />
+                <FaMedal />
             </div>
             <p class="trophyCount">{player.dailyBronze}</p>
         </div>

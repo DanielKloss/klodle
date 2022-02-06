@@ -1,7 +1,6 @@
 <script>
-	import IoMdTrophy from 'svelte-icons/io/IoMdTrophy.svelte';
 	import { todaySelected } from "$lib/stores/leaderboardState.js";
-import AddPlayer from './addPlayer.svelte';
+    import FaMedal from 'svelte-icons/fa/FaMedal.svelte'
     
     let trophyClasses = ["gold", "silver", "bronze"];
 
@@ -67,13 +66,13 @@ import AddPlayer from './addPlayer.svelte';
         <p>Pos.</p>
         <p>Name</p>
         <p>Score</p>
-        <p>Trophies</p>
+        <p>Medals</p>
     </div>
     {#each leaderboardPlayers as player, i}
     <a class="player {trophyClasses[i]}" href="/{player.playerId}">
         {#if i < 3}
         <div class="trophy">
-            <IoMdTrophy/>
+            <FaMedal/>
         </div>
         {:else}
         <div class="trophy"></div>
