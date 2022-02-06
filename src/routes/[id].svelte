@@ -120,16 +120,6 @@
 </div>
 
 <style>
-    .betaMessage {
-        font-size: var(--extraSmall);
-        text-align: center;
-        margin-bottom: 0.5rem;
-        padding: 0.25rem;
-        background-color: hsl(var(--accent1));
-        color: white;
-        border-radius: var(--radiusSmall);
-    }
-
     p {
         margin: 0;
     }

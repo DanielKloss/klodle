@@ -82,11 +82,23 @@
 	<p>Version 1.5</p>
 </div>
 
+<div class="message">UPDATE TO SORTING CRITERIA EFFECTIVE 6/2/22: PLEASE SEE BOTTOM OF LEADERBOARD</div>
+
 <main>
     <slot></slot>
 </main>
 
 <style>
+    .message {
+        font-size: var(--medium);
+        text-align: center;
+        margin: 0.5rem;
+        padding: 0.25rem;
+        background-color: hsl(var(--accent1));
+        color: white;
+        border-radius: var(--radiusSmall);
+    }
+
     main{
 		width: 80%;
 		margin: 0 auto;
