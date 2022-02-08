@@ -20,10 +20,12 @@
                 return a.dailyGold - b.dailyGold;
             } else if (a.dailySilver - b.dailySilver != 0){
                 return a.dailySilver - b.dailySilver;
-            } else if (a.dailyBronze - b.dailyBronze){
+            } else if (a.dailyBronze - b.dailyBronze != 0){
                 return a.dailyBronze - b.dailyBronze;
-            } else {
-                return a.todaysTime - b.todaysTime;
+            } else if (a.todaysTime > b.todaysTime){
+                return 1;
+            } else if (a.todaysTime < b.todaysTime){
+                return -1;
             }
 		} else {
 			if(!isFinite(a.averageScore.toFixed(2)) && isFinite(b.averageScore.toFixed(2))) {

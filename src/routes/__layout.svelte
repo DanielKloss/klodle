@@ -82,8 +82,6 @@
 	<p>Version 1.5</p>
 </div>
 
-<div class="message">UPDATE TO SORTING CRITERIA EFFECTIVE 6/2/22: PLEASE SEE BOTTOM OF LEADERBOARD</div>
-
 <main>
     <slot></slot>
 </main>
