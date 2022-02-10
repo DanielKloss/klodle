@@ -82,6 +82,8 @@
 	<p>Version 1.5</p>
 </div>
 
+<div class="message">If you have Klodle pinned to your home screen. Unpin and repin it to enable full screen mode.</div>
+
 <main>
     <slot></slot>
 </main>
