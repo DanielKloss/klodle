@@ -82,7 +82,7 @@
 	<p>Version 1.5</p>
 </div>
 
-<div class="message">If you have Klodle pinned to your home screen. Unpin and repin it to enable full screen mode.</div>
+<div class="message"><b>iOS users</b> - Unpin and repin to your home screen to get the Klodle logo on your pin.</div>
 
 <main>
     <slot></slot>
