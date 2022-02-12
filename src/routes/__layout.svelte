@@ -82,8 +82,6 @@
 	<p>Version 1.5</p>
 </div>
 
-<div class="message"><b>iOS users</b> - Unpin and repin to your home screen to get the Klodle logo on your pin.</div>
-
 <main>
     <slot></slot>
 </main>

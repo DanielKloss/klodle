@@ -8,7 +8,7 @@
     <a class="archieved" href="/{player.playerId}">
         <p class="playerName">{player.playerName}</p>
         <div>
-            <p class="playerScore">{player.lastUpdated}</p>
+            <p class="playerScore">{new Date(player.lastUpdated).toLocaleDateString('en-GB')}</p>
             <p class="scoreDetail">last played</p>
         </div>
         {#if !isFinite(player.averageScore)}
