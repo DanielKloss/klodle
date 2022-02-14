@@ -10,6 +10,7 @@
 </script>
 
 <script>
+	import IoMdRefresh from 'svelte-icons/io/IoMdRefresh.svelte'
 	import AddPlayer from "$lib/components/addPlayer.svelte";
 	import Archieve from "$lib/components/archieve.svelte";
 	import Leaderboard from "$lib/components/leaderboard.svelte";
@@ -23,6 +24,8 @@
 	<title>Klodle</title>
 </svelte:head>
 
+<button class="refreshButton" on:click="{() => location.reload()}"><IoMdRefresh/></button>
+
 <div class="leaderboardButtons">
 	<button on:click="{() => todaySelected.set(true)}" class="leaderboardButton" class:selectedLeaderboardButton="{$todaySelected}">Today's Scores</button>
 	<button on:click="{() => todaySelected.set(false)}" class="leaderboardButton" class:selectedLeaderboardButton="{!$todaySelected}">Overall Scores</button>
@@ -33,6 +36,17 @@
 <Archieve {archievedPlayers}/>
 
 <style>
+    .refreshButton {
+		position:absolute;
+		top: 7px;
+		left: 7px;
+		color: white;
+		background-color: transparent;
+		border: none;
+        width: 32px;
+        height: 32px;
+	}
+
 	.leaderboardButtons {
 		display: flex;
 		justify-content: space-around;
