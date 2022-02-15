@@ -1,4 +1,4 @@
-import { getAllPlayers, getPlayerById, insertPlayer, updatePlayer } from "../../sql";
+import { getAllPlayers, getPlayerById, insertPlayer, updatePlayer, getPlayerByName } from "../../sql";
 
 export async function get(request) {
 	let id = request.url.searchParams.get('id');
@@ -13,7 +13,7 @@ export async function get(request) {
 export async function post(request) {
 	const playerName = request.body;
 
-	if (await getPlayerByName(playerName).length > 0) {
+	if (await (await getPlayerByName(playerName)).body.player != undefined) {
 		return {
 			status: 500,
 			message: 'Name already taken, please choose another'

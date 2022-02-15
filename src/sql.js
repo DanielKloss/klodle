@@ -36,6 +36,21 @@ export async function getPlayerById(id) {
 	};
 }
 
+export async function getPlayerByName(name) {
+	const connection = await getConnection();
+	const rows = await connection.query(
+		'SELECT playerId, playerName FROM players WHERE playerName = ?;',
+		[name]
+	);
+	const player = rows[0][0];
+	connection.end();
+	return {
+		body: {
+			player
+		}
+	};
+}
+
 export async function getGamesFromPlayerId(id) {
     const connection = await getConnection();
     const rows = await connection.query('SELECT gameId, gameDate, score FROM games WHERE games.playerId = ?;', [id]);
