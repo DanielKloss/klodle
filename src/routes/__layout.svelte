@@ -4,6 +4,7 @@
 			let archievedPlayers = [];
 			let leaderboardPlayers = [];
         	let todaysDate = new Date().toJSON().slice(0, 10).toString();
+        	let yesterdaysDate = new Date(new Date().setDate(new Date().getDate()-1));
 
 			const playersResult = await fetch('/api/players');
 			const playersBody = await playersResult.json();
@@ -33,7 +34,10 @@
 					if (new Date(game.gameDate).toJSON().slice(0, 10).toString() == todaysDate){
                 		player.todaysScore = game.score;
 						player.todaysTime = new Date(game.gameDate).toJSON().slice(11, 16).toString();
-            		}
+            		} else if (new Date(game.gameDate).toJSON().slice(0, 10).toString() == yesterdaysDate){
+						player.yesterdaysScore = game.score;
+						player.yesterdaysTime = newDate(game.gameDate).toJSON().slice(11, 16).toString();
+					}
 				}
 
 				player.averageScore = player.overallScore / player.numberOfGames;
@@ -79,7 +83,7 @@
 <div class="details">
 	<p>Dan Kloss</p>
 	<p>{new Date().getFullYear()}</p>
-	<p>Version 1.5</p>
+	<p>Version 1.6</p>
 </div>
 
 <main>

@@ -1,6 +1,5 @@
 <script>
 	import { selectedLeaderboard } from "$lib/stores/leaderboardState.js";
-    import FaMedal from 'svelte-icons/fa/FaMedal.svelte'
     
     let trophyClasses = ["gold", "silver", "bronze"];
 
@@ -9,22 +8,14 @@
     $: $selectedLeaderboard, leaderboardPlayers = leaderboardPlayers.sort(sortPlayers);
 
     function sortPlayers(a, b) { 
-        if(!isFinite(a.todaysScore) && isFinite(b.todaysScore)) {
-            return 1;
-        } else if(!isFinite(b.todaysScore) && isFinite(a.todaysScore)) {
-            return -1;
-        }else if (a.todaysScore - b.todaysScore != 0){
-            return a.todaysScore - b.todaysScore;
-        } else if (a.dailyGold - b.dailyGold != 0){
-            return a.dailyGold - b.dailyGold;
-        } else if (a.dailySilver - b.dailySilver != 0){
-            return a.dailySilver - b.dailySilver;
-        } else if (a.dailyBronze - b.dailyBronze != 0){
-            return a.dailyBronze - b.dailyBronze;
-        } else if (a.todaysTime > b.todaysTime){
-            return 1;
-        } else if (a.todaysTime < b.todaysTime){
-            return -1;
+        if (b.dailyGold - a.dailyGold != 0){
+            return b.dailyGold - a.dailyGold;
+        } else if (b.dailySilver - a.dailySilver != 0){
+            return b.dailySilver - a.dailySilver;
+        } else if (b.dailyBronze - a.dailyBronze != 0){
+            return b.dailyBronze - a.dailyBronze
+        } else {
+            return b.numberOfGames - a.numberOfGames;
         }
 	};
 
@@ -33,36 +24,14 @@
 
 <div class="players">
     <div class="tableTitle">
-        <div class="trophy"></div>
         <p>Pos.</p>
         <p>Name</p>
-        <p>Score</p>
         <p>Medals</p>
     </div>
     {#each leaderboardPlayers as player, i}
     <a class="player {trophyClasses[i]}" href="/{player.playerId}">
-        {#if i < 3}
-        <div class="trophy">
-            <FaMedal/>
-        </div>
-        {:else}
-        <div class="trophy"></div>
-        {/if}
         <p class="position">{i+1}</p>
         <p class="playerName">{player.playerName}</p>
-        {#if player.todaysScore == 7}
-        <div>
-            <p class="playerScore">X</p>
-            <p class="scoreDetail">at {player.todaysTime}</p>
-        </div>
-        {:else if player.todaysScore == undefined}
-        <p>-</p>
-        {:else}
-        <div>
-            <p class="playerScore">{player.todaysScore}</p>
-            <p class="scoreDetail">at {player.todaysTime}</p>
-        </div>
-        {/if}
         <div class="trophySection">
             <div class="trophyCount gold"><p>{player.dailyGold}</p></div>
             <div class="trophyCount silver"><p>{player.dailySilver}</p></div>
@@ -70,13 +39,13 @@
         </div>
     </a>
     {/each}
-    <p class="sortedExplanation">Sorted by: <b>1) Score</b> then by <b>2) Fewest Gold Medals 3) Fewest Silver Medals 4) Fewest Bronze Medals</b> then by <b>5) Time Completed</b></p>
+    <p class="sortedExplanation">Sorted by: <b>1) Gold Medals 2) Silver Medals 3) Bronze Medals</b> then by <b>4) Games Completed</b></p>
 </div>
 
 <style>
 	.tableTitle {
 		display: grid;
-		grid-template-columns: auto repeat(4, 1fr);
+		grid-template-columns: 1fr 2fr 1fr;
 		justify-items: center;
 		align-items: stretch;
 		font-size: 0.7rem;
@@ -90,7 +59,7 @@
 		color: black;
 		margin-bottom: 0.5rem;
 		display: grid;
-		grid-template-columns: auto repeat(4, 1fr);
+		grid-template-columns: 1fr 2fr 1fr;
 		align-items: center;
 		text-align: center;
 		border-radius: var(--radiusLarge);

@@ -14,7 +14,9 @@
 	import AddPlayer from "$lib/components/addPlayer.svelte";
 	import Archieve from "$lib/components/archieve.svelte";
 	import Leaderboard from "$lib/components/leaderboard.svelte";
-	import { todaySelected } from "$lib/stores/leaderboardState.js";
+	import MedalLeaderboard from '$lib/components/medalLeaderboard.svelte';
+	import { selectedLeaderboard } from "$lib/stores/leaderboardState.js";
+import AverageLeaderboard from '$lib/components/averageLeaderboard.svelte';
 
 	export let leaderboardPlayers;
 	export let archievedPlayers;
@@ -27,13 +29,22 @@
 <button class="refreshButton" on:click="{() => location.reload()}"><IoMdRefresh/></button>
 
 <div class="leaderboardButtons">
-	<button on:click="{() => todaySelected.set(true)}" class="leaderboardButton" class:selectedLeaderboardButton="{$todaySelected}">Today's Scores</button>
-	<button on:click="{() => todaySelected.set(false)}" class="leaderboardButton" class:selectedLeaderboardButton="{!$todaySelected}">Overall Scores</button>
+	<button on:click="{() => selectedLeaderboard.set("today")}" class="leaderboardButton" class:selectedLeaderboardButton="{$selectedLeaderboard == "today"}">Today</button>
+	<button on:click="{() => selectedLeaderboard.set("average")}" class="leaderboardButton" class:selectedLeaderboardButton="{$selectedLeaderboard == "average"}">Average</button>
+	<button on:click="{() => selectedLeaderboard.set("medals")}" class="leaderboardButton" class:selectedLeaderboardButton="{$selectedLeaderboard == "medals"}">Medals</button>
+	<button on:click="{() => selectedLeaderboard.set("archieve")}" class="leaderboardButton" class:selectedLeaderboardButton="{$selectedLeaderboard == "archieve"}">Archive</button>
 </div>
 
+{#if $selectedLeaderboard == "today"}
 <Leaderboard {leaderboardPlayers}/>
-<AddPlayer buttonText="add" placeholder="New Player's Name"/>
+{:else if $selectedLeaderboard == "average"}
+<AverageLeaderboard {leaderboardPlayers}/>
+{:else if $selectedLeaderboard == "medals"}
+<MedalLeaderboard {leaderboardPlayers}/>
+{:else if $selectedLeaderboard == "archieve"}
 <Archieve {archievedPlayers}/>
+{/if}
+<AddPlayer buttonText="add" placeholder="New Player's Name"/>
 
 <style>
     .refreshButton {
@@ -51,18 +62,21 @@
 		display: flex;
 		justify-content: space-around;
 		margin-bottom: 1rem;
+		gap: 0.5rem;
 	}
 
 	.leaderboardButton {
-		text-transform: uppercase;
-		font-size: var(--medium);
+		padding: 0.5rem;
+		border: none;
+		border-radius: var(--radiusLarge);
+		box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+		font-size: var(--small);
 		font-weight: bold;
-		border: 0px;
-		background-color: transparent;
-		width: 30%;
+		text-transform: uppercase;
 	}
 
 	.selectedLeaderboardButton {
-		border-bottom: 0.2rem solid hsl(var(--accent1));
+		background-color: hsl(var(--accent1));
+		box-shadow: none;
 	}
 </style>

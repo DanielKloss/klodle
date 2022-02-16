@@ -1,3 +1,3 @@
 import { writable } from 'svelte/store';
 
-export const todaySelected = writable(true);
+export const selectedLeaderboard = writable("today");
