@@ -11,15 +11,46 @@
 
 <script>
 	import IoMdRefresh from 'svelte-icons/io/IoMdRefresh.svelte'
+	import { swipe } from 'svelte-gestures';
+	import { fly } from 'svelte/transition';
 	import AddPlayer from "$lib/components/addPlayer.svelte";
 	import Archieve from "$lib/components/archieve.svelte";
 	import Leaderboard from "$lib/components/leaderboard.svelte";
 	import MedalLeaderboard from '$lib/components/medalLeaderboard.svelte';
+	import AverageLeaderboard from '$lib/components/averageLeaderboard.svelte';
 	import { selectedLeaderboard } from "$lib/stores/leaderboardState.js";
-import AverageLeaderboard from '$lib/components/averageLeaderboard.svelte';
 
 	export let leaderboardPlayers;
 	export let archievedPlayers;
+
+	let leaderboards = ["today", "average", "medals", "archieve"];
+	let direction;
+
+	function userSwiped(event) {
+		direction =event.detail.direction
+		let index = leaderboards.indexOf($selectedLeaderboard);
+		if(direction == "left" && index < 3){
+			selectedLeaderboard.set(leaderboards[index+1]);
+		} else if (direction == "right" && index > 0){
+			selectedLeaderboard.set(leaderboards[index-1]);
+		}
+	}
+
+	const flyOut=(node)=>{
+		if (direction == "right"){
+			return fly(node,{x:200, duration:200})
+		} else if (direction == "left"){
+			return fly(node,{x:-200, duration:200})
+		}
+	}
+
+	const flyIn=(node)=>{
+		if (direction == "right"){
+			return fly(node,{x:-200, duration:200, delay:200})
+		} else if (direction == "left"){
+			return fly(node,{x: 200, duration: 300, delay:200})
+		}
+	}
 </script>
 
 <svelte:head>
@@ -28,23 +59,35 @@ import AverageLeaderboard from '$lib/components/averageLeaderboard.svelte';
 
 <button class="refreshButton" on:click="{() => location.reload()}"><IoMdRefresh/></button>
 
-<div class="leaderboardButtons">
-	<button on:click="{() => selectedLeaderboard.set("today")}" class="leaderboardButton" class:selectedLeaderboardButton="{$selectedLeaderboard == "today"}">Today</button>
-	<button on:click="{() => selectedLeaderboard.set("average")}" class="leaderboardButton" class:selectedLeaderboardButton="{$selectedLeaderboard == "average"}">Average</button>
-	<button on:click="{() => selectedLeaderboard.set("medals")}" class="leaderboardButton" class:selectedLeaderboardButton="{$selectedLeaderboard == "medals"}">Medals</button>
-	<button on:click="{() => selectedLeaderboard.set("archieve")}" class="leaderboardButton" class:selectedLeaderboardButton="{$selectedLeaderboard == "archieve"}">Archive</button>
-</div>
+<div use:swipe={{ timeframe: 300, minSwipeDistance: 100, touchAction: 'pan-y' }} on:swipe={userSwiped}>
+	<div class="leaderboardButtons">
+		<button on:click="{() => selectedLeaderboard.set("today")}" class="leaderboardButton" class:selectedLeaderboardButton="{$selectedLeaderboard == "today"}">Today</button>
+		<button on:click="{() => selectedLeaderboard.set("average")}" class="leaderboardButton" class:selectedLeaderboardButton="{$selectedLeaderboard == "average"}">Average</button>
+		<button on:click="{() => selectedLeaderboard.set("medals")}" class="leaderboardButton" class:selectedLeaderboardButton="{$selectedLeaderboard == "medals"}">Medals</button>
+		<button on:click="{() => selectedLeaderboard.set("archieve")}" class="leaderboardButton" class:selectedLeaderboardButton="{$selectedLeaderboard == "archieve"}">Archive</button>
+	</div>
 
-{#if $selectedLeaderboard == "today"}
-<Leaderboard {leaderboardPlayers}/>
-{:else if $selectedLeaderboard == "average"}
-<AverageLeaderboard {leaderboardPlayers}/>
-{:else if $selectedLeaderboard == "medals"}
-<MedalLeaderboard {leaderboardPlayers}/>
-{:else if $selectedLeaderboard == "archieve"}
-<Archieve {archievedPlayers}/>
-{/if}
-<AddPlayer buttonText="add" placeholder="New Player's Name"/>
+
+	{#if $selectedLeaderboard == "today"}
+	<div in:flyIn out:flyOut>
+		<Leaderboard {leaderboardPlayers}/>
+	</div>
+	{:else if $selectedLeaderboard == "average"}
+	<div in:flyIn out:flyOut>
+		<AverageLeaderboard {leaderboardPlayers}/>
+	</div>
+	{:else if $selectedLeaderboard == "medals"}
+	<div in:flyIn out:flyOut>
+		<MedalLeaderboard {leaderboardPlayers}/>
+	</div>
+	{:else if $selectedLeaderboard == "archieve"}
+	<div in:flyIn out:flyOut>
+		<Archieve {archievedPlayers}/>
+	</div>
+	{/if}
+
+	<AddPlayer buttonText="add" placeholder="New Player's Name"/>
+</div>
 
 <style>
     .refreshButton {

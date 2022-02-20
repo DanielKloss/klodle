@@ -83,8 +83,10 @@
 <div class="details">
 	<p>Dan Kloss</p>
 	<p>{new Date().getFullYear()}</p>
-	<p>Version 1.6</p>
+	<p>Version 1.7</p>
 </div>
+
+<div class="message">You can now swipe to move between leaderboards (not tested on iOS so please let me know if it doesn't work)</div>
 
 <main>
     <slot></slot>
