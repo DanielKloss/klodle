@@ -59,7 +59,7 @@
 
 <button class="refreshButton" on:click="{() => location.reload()}"><IoMdRefresh/></button>
 
-<div use:swipe={{ timeframe: 300, minSwipeDistance: 100, touchAction: 'pan-y' }} on:swipe={userSwiped}>
+<div use:swipe={{ timeframe: 400, minSwipeDistance: 50, touchAction: 'pan-y' }} on:swipe={userSwiped}>
 	<div class="leaderboardButtons">
 		<button on:click="{() => selectedLeaderboard.set("today")}" class="leaderboardButton" class:selectedLeaderboardButton="{$selectedLeaderboard == "today"}">Today</button>
 		<button on:click="{() => selectedLeaderboard.set("average")}" class="leaderboardButton" class:selectedLeaderboardButton="{$selectedLeaderboard == "average"}">Average</button>
