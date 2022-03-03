@@ -74,6 +74,9 @@
     {/if}
 </div>
 <div class="section">
+    <p class="score">Average Score: {player.averageScore}</p>
+</div>
+<div class="section">
     <p class="subHeader">Daily Medals:</p>
     <div class="row-evenly">
         <div class="trophySection gold">

@@ -29,11 +29,15 @@
 	};
 
     leaderboardPlayers = leaderboardPlayers.sort(sortPlayers);
+
+    let todaysDate = new Date().toLocaleDateString('en-GB', {day:'numeric', month:'short'});
+    // let todaysDay = todaysDate.getDate();
+    // let todaysMonth = todaysDate.getMonth();
 </script>
 
 <div class="players">
     <div class="tableTitle">
-        <div class="trophy"></div>
+        <p class="todaysDate">{todaysDate}</p>
         <p>Pos.</p>
         <p>Name</p>
         <p>Score</p>
@@ -155,5 +159,9 @@
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+
+    .todaysDate {
+        margin-left: 1rem;
     }
 </style>
