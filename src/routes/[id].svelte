@@ -74,7 +74,7 @@
     {/if}
 </div>
 <div class="section">
-    <p class="score">Average Score: {player.averageScore}</p>
+    <p class="score">Average Score: {player.averageScore.toFixed(2)}</p>
 </div>
 <div class="section">
     <p class="subHeader">Daily Medals:</p>
