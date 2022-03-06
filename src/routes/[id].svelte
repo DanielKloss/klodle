@@ -15,6 +15,7 @@
     import IoMdCreate from 'svelte-icons/io/IoMdCreate.svelte'
     import IoMdArrowRoundBack from 'svelte-icons/io/IoMdArrowRoundBack.svelte'
     import FaMedal from 'svelte-icons/fa/FaMedal.svelte'
+    import IoMdTrophy from 'svelte-icons/io/IoMdTrophy.svelte'
     import AddPlayer from '$lib/components/addPlayer.svelte';
 
     export let player;
@@ -83,22 +84,32 @@
             <div class="trophy">
                 <FaMedal />
             </div>
-            <p class="trophyCount">{player.dailyGold}</p>
+            <p class="medalCount">{player.dailyGold}</p>
         </div>
         <div class="trophySection silver">
             <div class="trophy">
                 <FaMedal />
             </div>
-            <p class="trophyCount">{player.dailySilver}</p>
+            <p class="medalCount">{player.dailySilver}</p>
         </div>
         <div class="trophySection bronze">
             <div class="trophy">
                 <FaMedal />
             </div>
-            <p class="trophyCount">{player.dailyBronze}</p>
+            <p class="medalCount">{player.dailyBronze}</p>
         </div>
     </div>
 </div>
+{#if player.games.length >= 50}
+<div class="section">
+    <p class="subHeader">Trophies:</p>
+    {#each player.games as game, index}
+        {#if (index+1) % 50 == 0 && index != 0}
+        <div class="trophyCount gold"><IoMdTrophy/>{index+1}</div>
+        {/if}
+    {/each}
+</div>
+{/if}
 <div class="section">
     <p class="subHeader">Stats:</p>
     <div class="row-between">
@@ -149,8 +160,19 @@
 		height: 32px;
 	}
 
-    .trophyCount {
+    .medalCount {
         font-size: var(--large);
+    }
+
+    .trophyCount {
+        width: 60px;
+		height: 60px;
+		border-radius: 50%;
+		padding: 0.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: var(--small);
     }
 
     .section {

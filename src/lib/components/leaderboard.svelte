@@ -31,8 +31,6 @@
     leaderboardPlayers = leaderboardPlayers.sort(sortPlayers);
 
     let todaysDate = new Date().toLocaleDateString('en-GB', {day:'numeric', month:'short'});
-    // let todaysDay = todaysDate.getDate();
-    // let todaysMonth = todaysDate.getMonth();
 </script>
 
 <div class="players">

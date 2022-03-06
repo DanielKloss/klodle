@@ -11,6 +11,7 @@
 
 <script>
 	import IoMdRefresh from 'svelte-icons/io/IoMdRefresh.svelte'
+	import IoMdTrophy from 'svelte-icons/io/IoMdTrophy.svelte'
 	import { swipe } from 'svelte-gestures';
 	import { fly } from 'svelte/transition';
 	import AddPlayer from "$lib/components/addPlayer.svelte";
@@ -58,6 +59,18 @@
 </svelte:head>
 
 <button class="refreshButton" on:click="{() => location.reload()}"><IoMdRefresh/></button>
+
+	{#each leaderboardPlayers as player}
+	{#if player.games.length % 50 == 0 && player.games.length != 0}
+	<div class="congratsContainer">
+		<div class="trophyCount gold"><IoMdTrophy/></div>
+		<div class="congrats">
+			<div>Congratulations to {player.playerName} for completing <b>{player.games.length}</b> games on Klodle.</div>
+			<div class="smallText">Here's a prize for your profile.</div>
+		</div>
+	</div>
+	{/if}
+	{/each}
 
 <div use:swipe={{ timeframe: 400, minSwipeDistance: 50, touchAction: 'pan-y' }} on:swipe={userSwiped}>
 	<div class="leaderboardButtons">
@@ -121,5 +134,37 @@
 	.selectedLeaderboardButton {
 		background-color: hsl(var(--accent1));
 		box-shadow: none;
+	}
+
+	.congratsContainer {
+		display: grid;
+		grid-template-columns: auto 1fr;
+		align-items: center;
+		text-align: center;
+		border-radius: var(--radiusLarge);
+		margin-bottom: 1rem;
+		gap: 0.5rem;
+	}
+
+	.congrats {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.trophyCount {
+        width: 60px;
+		height: 60px;
+		border-radius: 50%;
+		box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+		padding: 0.5rem;
+    }
+
+	.gold {
+  		background-color: #FFE764;
+	}
+
+	.smallText {
+		font-size: var(--small);
 	}
 </style>
