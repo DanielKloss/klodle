@@ -19,7 +19,11 @@
 				player.overallScore = 0;
 				player.numberOfGames = 0;
 				player.numberOfFails = 0;
+				player.biggestStreak = 0;
+				player.currentStreak = 0;
 				player.scores = [{score: 1, count:0}, {score: 2, count:0}, {score: 3, count:0}, {score: 4, count:0}, {score: 5, count:0}, {score: 6, count:0}, {score: 7, count: 0}]
+
+				let streakCount = 0;
 
 				for (const game of player.games){
 					player.scores.find(s => s.score == game.score).count++;
@@ -29,6 +33,12 @@
 
 					if (game.score > 6){
 						player.numberOfFails++;
+						if (streakCount > player.biggestStreak){
+							player.biggestStreak = streakCount;
+						}
+						streakCount = 0;
+					} else {
+						streakCount++;
 					}
 
 					if (new Date(game.gameDate).toJSON().slice(0, 10).toString() == todaysDate){
@@ -39,6 +49,11 @@
 						player.yesterdaysTime = newDate(game.gameDate).toJSON().slice(11, 16).toString();
 					}
 				}
+
+				if (player.numberOfFails == 0){
+					player.biggestStreak = streakCount;
+				}
+				player.currentStreak = streakCount;
 
 				player.averageScore = player.overallScore / player.numberOfGames;
 

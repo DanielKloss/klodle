@@ -60,17 +60,29 @@
 
 <button class="refreshButton" on:click="{() => location.reload()}"><IoMdRefresh/></button>
 
-	{#each leaderboardPlayers as player}
-	{#if player.games.length % 50 == 0 && player.games.length != 0}
-	<div class="congratsContainer">
-		<div class="trophyCount gold"><IoMdTrophy/></div>
-		<div class="congrats">
-			<div>Congratulations to {player.playerName} for completing <b>{player.games.length}</b> games on Klodle.</div>
-			<div class="smallText">Here's a prize for your profile.</div>
-		</div>
+{#each leaderboardPlayers as player}
+{#if player.currentStreak == 49}
+<div class="congratsContainer">
+	<div class="trophyCount red"><img src="../../static/images/cannon.svg" alt="49 49 undefeated" class="cannon"/></div>
+	<div class="congrats">
+		<div>Congratulations to {player.playerName} for playing 49 games on Klodle without losing</div>
+		<div class="smallText">Here's a prize for your profile.</div>
 	</div>
-	{/if}
-	{/each}
+</div>
+{/if}
+{/each}
+
+{#each leaderboardPlayers as player}
+{#if player.games.length % 50 == 0 && player.games.length != 0}
+<div class="congratsContainer">
+	<div class="trophyCount gold"><IoMdTrophy/></div>
+	<div class="congrats">
+		<div>Congratulations to {player.playerName} for completing <b>{player.games.length}</b> games on Klodle.</div>
+		<div class="smallText">Here's a prize for your profile.</div>
+	</div>
+</div>
+{/if}
+{/each}
 
 <div use:swipe={{ timeframe: 400, minSwipeDistance: 50, touchAction: 'pan-y' }} on:swipe={userSwiped}>
 	<div class="leaderboardButtons">
@@ -158,10 +170,20 @@
 		border-radius: 50%;
 		box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 		padding: 0.5rem;
+		display:flex;
     }
+
+	.cannon {
+		margin: 0 auto;
+  		display: block;
+	}
 
 	.gold {
   		background-color: #FFE764;
+	}
+
+	.red {
+		background-color: #f00000;
 	}
 
 	.smallText {

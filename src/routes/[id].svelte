@@ -100,22 +100,35 @@
         </div>
     </div>
 </div>
-{#if player.games.length >= 50}
+{#if player.games.length >= 50 || player.biggestStreak >= 49}
 <div class="section">
-    <p class="subHeader">Trophies:</p>
-    {#each player.games as game, index}
-        {#if (index+1) % 50 == 0 && index != 0}
-        <div class="trophyCount gold"><IoMdTrophy/>{index+1}</div>
+    <p class="subHeader">Achievements:</p>
+    <div class="trophySection">
+        {#if player.biggestStreak >= 49}
+        <div class="trophyContainer">
+            <div class="cannonContainer red"><img src="../../static/images/cannon.svg" alt="49 49 undefeated" class="cannon"/></div>
+            <p>49 Unbeaten</p>
+        </div>
         {/if}
-    {/each}
+        {#each player.games as game, index}
+            {#if (index+1) % 50 == 0 && index != 0}
+            <div class="trophyContainer">
+                <div class="trophyCount gold"><IoMdTrophy/></div>
+                <p>{index+1} Games Completed</p>
+            </div>
+            {/if}
+        {/each}
+    </div>
 </div>
 {/if}
 <div class="section">
     <p class="subHeader">Stats:</p>
     <div class="row-between">
-        <p>Games: {player.numberOfGames}</p>
-        <p>Lost: {player.numberOfFails}</p>
-        <p>Win %: {parseInt(((player.numberOfGames - player.numberOfFails) / player.numberOfGames) * 100)}</p>
+        <p><b>Games:</b> {player.numberOfGames}</p>
+        <p><b>Lost:</b> {player.numberOfFails}</p>
+        <p><b>Win %:</b> {parseInt(((player.numberOfGames - player.numberOfFails) / player.numberOfGames) * 100)}</p>
+        <p><b>Current Streak:</b> {player.currentStreak}</p>
+        <p><b>Biggest Streak:</b> {player.biggestStreak}</p>
     </div>
 </div>
 <div class="section">
@@ -150,9 +163,18 @@
     .trophySection {
         display: flex;
         align-items: center;
-        gap: 0.25rem;
+        gap: 0.5rem;
         border-radius: var(--radiusLarge);
         padding: 0.25rem 1rem;
+    }
+
+    .trophyContainer {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-size: var(--small);
+        gap: 0.25rem;
     }
 
     .trophy {
@@ -231,6 +253,8 @@
 
     .row-between {
         display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
         justify-content: space-between;
     }
 
@@ -267,5 +291,24 @@
 	
 	.bronze {
   		background-color: #FFC48B;
+	}
+
+    .cannonContainer {
+        width: 60px;
+		height: 60px;
+		border-radius: 50%;
+		box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+		padding: 0.5rem;
+		display:flex;
+        justify-content: center;
+    }
+
+    .red {
+		background-color: #f00000;
+	}
+
+    .cannon {
+		margin: 0 auto;
+  		display: block;
 	}
 </style>
