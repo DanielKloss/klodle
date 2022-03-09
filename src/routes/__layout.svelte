@@ -50,7 +50,7 @@
 					}
 				}
 
-				if (player.numberOfFails == 0){
+				if (player.numberOfFails == 0 || streakCount > player.biggestStreak){
 					player.biggestStreak = streakCount;
 				}
 				player.currentStreak = streakCount;
