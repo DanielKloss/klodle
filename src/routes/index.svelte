@@ -63,7 +63,7 @@
 {#each leaderboardPlayers as player}
 {#if player.currentStreak == 49}
 <div class="congratsContainer">
-	<div class="trophyCount red"><img src="../../static/images/cannon.svg" alt="49 49 undefeated" class="cannon"/></div>
+	<div class="trophyCount red"><img src="/images/cannon.svg" alt="49 49 undefeated" class="cannon"/></div>
 	<div class="congrats">
 		<div>Congratulations to {player.playerName} for playing 49 games on Klodle without losing</div>
 		<div class="smallText">Here's a prize for your profile.</div>
@@ -77,7 +77,7 @@
 <div class="congratsContainer">
 	<div class="trophyCount gold"><IoMdTrophy/></div>
 	<div class="congrats">
-		<div>Congratulations to {player.playerName} for completing <b>{player.games.length}</b> games on Klodle.</div>
+		<div>Congratulations to <span class="capitalise">{player.playerName}</span> for completing <b>{player.games.length}</b> games on Klodle.</div>
 		<div class="smallText">Here's a prize for your profile.</div>
 	</div>
 </div>
@@ -188,5 +188,9 @@
 
 	.smallText {
 		font-size: var(--small);
+	}
+
+	.capitalise {
+		text-transform: capitalize;
 	}
 </style>

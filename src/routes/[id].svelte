@@ -106,7 +106,7 @@
     <div class="trophySection">
         {#if player.biggestStreak >= 49}
         <div class="trophyContainer">
-            <div class="cannonContainer red"><img src="../../static/images/cannon.svg" alt="49 49 undefeated" class="cannon"/></div>
+            <div class="cannonContainer red"><img src="/images/cannon.svg" alt="49 49 undefeated" class="cannon"/></div>
             <p>49 Unbeaten</p>
         </div>
         {/if}
@@ -297,7 +297,6 @@
         width: 60px;
 		height: 60px;
 		border-radius: 50%;
-		box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 		padding: 0.5rem;
 		display:flex;
         justify-content: center;
