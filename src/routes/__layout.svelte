@@ -21,6 +21,11 @@
 				player.numberOfFails = 0;
 				player.biggestStreak = 0;
 				player.currentStreak = 0;
+
+				player.earlyBird = 0;
+				player.afternoonChiller = 0;
+				player.nightOwl = 0;
+
 				player.scores = [{score: 1, count:0}, {score: 2, count:0}, {score: 3, count:0}, {score: 4, count:0}, {score: 5, count:0}, {score: 6, count:0}, {score: 7, count: 0}]
 
 				let streakCount = 0;
@@ -47,6 +52,16 @@
             		} else if (new Date(game.gameDate).toJSON().slice(0, 10).toString() == yesterdaysDate){
 						player.yesterdaysScore = game.score;
 						player.yesterdaysTime = newDate(game.gameDate).toJSON().slice(11, 16).toString();
+					}
+
+					let gameHour = new Date(game.gameDate).getHours();
+
+					if (gameHour < 10){
+						player.earlyBird++;
+					} else if (gameHour >= 10 && gameHour < 17){
+						player.afternoonChiller++;
+					} else {
+						player.nightOwl++;
 					}
 				}
 

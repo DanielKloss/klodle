@@ -17,6 +17,9 @@
     import FaMedal from 'svelte-icons/fa/FaMedal.svelte'
     import IoMdTrophy from 'svelte-icons/io/IoMdTrophy.svelte'
     import AddPlayer from '$lib/components/addPlayer.svelte';
+	import GiOwl from 'svelte-icons/gi/GiOwl.svelte';
+    import GiEarthWorm from 'svelte-icons/gi/GiEarthWorm.svelte'
+    import GiSunglasses from 'svelte-icons/gi/GiSunglasses.svelte';
 
     export let player;
     export let todaysDate;
@@ -100,10 +103,25 @@
         </div>
     </div>
 </div>
-{#if player.games.length >= 50 || player.biggestStreak >= 49}
 <div class="section">
     <p class="subHeader">Achievements:</p>
     <div class="trophySection">
+        {#if Math.max(player.earlyBird, player.afternoonChiller, player.nightOwl) == player.earlyBird}
+        <div class="trophyContainer">
+            <div class="trophyCount morning"><GiEarthWorm/></div>
+            <p>Early Bird</p>
+        </div>
+        {:else if Math.max(player.earlyBird, player.afternoonChiller, player.nightOwl) == player.afternoonChiller}
+        <div class="trophyContainer">
+            <div class="trophyCount afternoon"><GiSunglasses/></div>
+            <p>Afternoon Chiller</p>
+        </div>
+        {:else if Math.max(player.earlyBird, player.afternoonChiller, player.nightOwl) == player.nightOwl}
+        <div class="trophyContainer">
+            <div class="trophyCount night"><GiOwl/></div>
+            <p>Night Owl</p>
+        </div>
+        {/if}
         {#if player.biggestStreak >= 49}
         <div class="trophyContainer">
             <div class="cannonContainer red"><img src="/images/cannon.svg" alt="49 49 undefeated" class="cannon"/></div>
@@ -114,13 +132,12 @@
             {#if (index+1) % 50 == 0 && index != 0}
             <div class="trophyContainer">
                 <div class="trophyCount gold"><IoMdTrophy/></div>
-                <p>{index+1} Games Completed</p>
+                <p>{index+1} Games</p>
             </div>
             {/if}
         {/each}
     </div>
 </div>
-{/if}
 <div class="section">
     <p class="subHeader">Stats:</p>
     <div class="row-between">
@@ -163,6 +180,7 @@
     .trophySection {
         display: flex;
         align-items: center;
+        justify-content: space-evenly;
         gap: 0.5rem;
         border-radius: var(--radiusLarge);
         padding: 0.25rem 1rem;
@@ -292,6 +310,18 @@
 	.bronze {
   		background-color: #FFC48B;
 	}
+
+    .morning { 
+        background-color: #FFEBB3;
+    }
+
+    .afternoon {
+        background-color: #FFB37B;
+    }
+
+    .night {
+        background-color: #2B588C;
+    }
 
     .cannonContainer {
         width: 60px;
