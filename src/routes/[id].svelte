@@ -20,6 +20,7 @@
 	import GiOwl from 'svelte-icons/gi/GiOwl.svelte';
     import GiEarthWorm from 'svelte-icons/gi/GiEarthWorm.svelte'
     import GiSunglasses from 'svelte-icons/gi/GiSunglasses.svelte';
+    import GiSofa from 'svelte-icons/gi/GiSofa.svelte'
 
     export let player;
     export let todaysDate;
@@ -42,6 +43,7 @@
 
         location.reload();
 	};
+    console.log(player)
 </script>
 
 <svelte:head>
@@ -81,6 +83,9 @@
     <p class="score">Average Score: {player.averageScore.toFixed(2)}</p>
 </div>
 <div class="section">
+    <p class="score capitalise">Player Type: {player.playerType}</p>
+</div>
+<div class="section">
     <p class="subHeader">Daily Medals:</p>
     <div class="row-evenly">
         <div class="trophySection gold">
@@ -105,32 +110,40 @@
 </div>
 <div class="section">
     <p class="subHeader">Achievements:</p>
-    <div class="trophySection">
-        {#if Math.max(player.earlyBird, player.afternoonChiller, player.nightOwl) == player.earlyBird}
-        <div class="trophyContainer">
+    <div class="trophySection achievementLayout">
+        {#if player.earlyBird > 0}
+        <div class="trophyContainer achievement">
             <div class="trophyCount morning"><GiEarthWorm/></div>
             <p>Early Bird</p>
         </div>
-        {:else if Math.max(player.earlyBird, player.afternoonChiller, player.nightOwl) == player.afternoonChiller}
-        <div class="trophyContainer">
+        {/if}
+        {#if player.afternoonChiller > 0}
+        <div class="trophyContainer achievement">
             <div class="trophyCount afternoon"><GiSunglasses/></div>
             <p>Afternoon Chiller</p>
         </div>
-        {:else if Math.max(player.earlyBird, player.afternoonChiller, player.nightOwl) == player.nightOwl}
-        <div class="trophyContainer">
+        {/if}
+        {#if player.eveningRelaxer > 0}
+        <div class="trophyContainer achievement">
+            <div class="trophyCount evening"><GiSofa/></div>
+            <p>Evening Relaxer</p>
+        </div>
+        {/if}
+        {#if player.nightOwl > 0}
+        <div class="trophyContainer achievement">
             <div class="trophyCount night"><GiOwl/></div>
             <p>Night Owl</p>
         </div>
         {/if}
         {#if player.biggestStreak >= 49}
-        <div class="trophyContainer">
+        <div class="trophyContainer achievement">
             <div class="cannonContainer red"><img src="/images/cannon.svg" alt="49 49 undefeated" class="cannon"/></div>
             <p>49 Unbeaten</p>
         </div>
         {/if}
         {#each player.games as game, index}
             {#if (index+1) % 50 == 0 && index != 0}
-            <div class="trophyContainer">
+            <div class="trophyContainer achievement">
                 <div class="trophyCount gold"><IoMdTrophy/></div>
                 <p>{index+1} Games</p>
             </div>
@@ -184,6 +197,16 @@
         gap: 0.5rem;
         border-radius: var(--radiusLarge);
         padding: 0.25rem 1rem;
+        text-align: center;
+    }
+
+    .achievementLayout {
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+    .achievement {
+        max-width: 64px;
     }
 
     .trophyContainer {
@@ -220,6 +243,10 @@
         padding: 0.5rem;
         background-color: hsl(var(--accent2));
         border-radius: var(--radiusLarge);
+    }
+
+    .capitalise {
+        text-transform: capitalize;
     }
 
     .spaceBetween {
@@ -316,11 +343,17 @@
     }
 
     .afternoon {
-        background-color: #FFB37B;
+        background-color: #FFAB9A;
+    }
+
+    .evening {
+        background-color: #6F8392;
+        color: #EEEEEE;
     }
 
     .night {
-        background-color: #2B588C;
+        background-color: #435158;
+        color: #EEEEEE;
     }
 
     .cannonContainer {

@@ -25,6 +25,7 @@
 				player.earlyBird = 0;
 				player.afternoonChiller = 0;
 				player.nightOwl = 0;
+				player.eveningRelaxer = 0;
 
 				player.scores = [{score: 1, count:0}, {score: 2, count:0}, {score: 3, count:0}, {score: 4, count:0}, {score: 5, count:0}, {score: 6, count:0}, {score: 7, count: 0}]
 
@@ -56,13 +57,27 @@
 
 					let gameHour = new Date(game.gameDate).getHours();
 
-					if (gameHour < 10){
-						player.earlyBird++;
-					} else if (gameHour >= 10 && gameHour < 17){
-						player.afternoonChiller++;
-					} else {
+					if (gameHour < 6){
 						player.nightOwl++;
+					} else if (gameHour >=6 && gameHour < 12) {
+						player.earlyBird++;
+					} else if (gameHour >= 12 && gameHour < 18){
+						player.afternoonChiller++;
+					} else if (gameHour >= 18){
+						player.eveningRelaxer++;
 					}
+				}
+
+				let mostPlays = (Math.max(player.earlyBird, player.afternoonChiller, player.nightOwl, player.eveningRelaxer));
+
+				if (mostPlays == player.earlyBird){
+					player.playerType = "early bird";
+				} else if (mostPlays == player.afternoonChiller){
+					player.playerType = "afternoon chiller";
+				} else if (mostPlays == player.nightOwl){
+					player.playerType = "night owl";
+				} else if (mostPlays == player.eveningRelaxer){
+					player.playerType = "evening relaxer";
 				}
 
 				if (player.numberOfFails == 0 || streakCount > player.biggestStreak){
