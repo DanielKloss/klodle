@@ -26,6 +26,7 @@
 				player.afternoonChiller = 0;
 				player.nightOwl = 0;
 				player.eveningRelaxer = 0;
+				player.previousFourTimes = [];
 
 				player.scores = [{score: 1, count:0}, {score: 2, count:0}, {score: 3, count:0}, {score: 4, count:0}, {score: 5, count:0}, {score: 6, count:0}, {score: 7, count: 0}]
 
@@ -128,8 +129,10 @@
 <div class="details">
 	<p>Dan Kloss</p>
 	<p>{new Date().getFullYear()}</p>
-	<p>Version 2.1</p>
+	<p>Version 2.2</p>
 </div>
+
+<p class="message">Lots of changes to achievements. You can now click on an achievement to check what you (or someone else) got it for. Achievements will no longer be announced on the front page. Let me know if anything isn't working as expected.</p>
 
 <main>
     <slot></slot>

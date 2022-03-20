@@ -60,30 +60,6 @@
 
 <button class="refreshButton" on:click="{() => location.reload()}"><IoMdRefresh/></button>
 
-{#each leaderboardPlayers as player}
-{#if player.currentStreak == 49}
-<div class="congratsContainer">
-	<div class="trophyCount red"><img src="/images/cannon.svg" alt="49 49 undefeated" class="cannon"/></div>
-	<div class="congrats">
-		<div>Congratulations to <span class="capitalise">{player.playerName}</span> for playing <b>49</b> games on Klodle without losing</div>
-		<div class="smallText">Here's a prize for your profile.</div>
-	</div>
-</div>
-{/if}
-{/each}
-
-{#each leaderboardPlayers as player}
-{#if player.games.length % 50 == 0 && player.games.length != 0}
-<div class="congratsContainer">
-	<div class="trophyCount gold"><IoMdTrophy/></div>
-	<div class="congrats">
-		<div>Congratulations to <span class="capitalise">{player.playerName}</span> for completing <b>{player.games.length}</b> games on Klodle.</div>
-		<div class="smallText">Here's a prize for your profile.</div>
-	</div>
-</div>
-{/if}
-{/each}
-
 <div use:swipe={{ timeframe: 400, minSwipeDistance: 50, touchAction: 'pan-y' }} on:swipe={userSwiped}>
 	<div class="leaderboardButtons">
 		<button on:click="{() => selectedLeaderboard.set("today")}" class="leaderboardButton" class:selectedLeaderboardButton="{$selectedLeaderboard == "today"}">Today</button>
@@ -91,7 +67,6 @@
 		<button on:click="{() => selectedLeaderboard.set("medals")}" class="leaderboardButton" class:selectedLeaderboardButton="{$selectedLeaderboard == "medals"}">Medals</button>
 		<button on:click="{() => selectedLeaderboard.set("archieve")}" class="leaderboardButton" class:selectedLeaderboardButton="{$selectedLeaderboard == "archieve"}">Archive</button>
 	</div>
-
 
 	{#if $selectedLeaderboard == "today"}
 	<div in:flyIn out:flyOut>

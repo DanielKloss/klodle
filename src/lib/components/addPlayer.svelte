@@ -1,5 +1,5 @@
 <script>
-	export let currentPlayerName;
+	export let currentPlayer;
 	export let buttonText;
 	export let placeholder;
 	let newPlayerName;
@@ -13,12 +13,21 @@
 		}
 
 		newPlayerName = newPlayerName.trim().toLowerCase();
+		let resultPlayer;
 
-		if (newPlayerName == currentPlayerName){
+		if (currentPlayer == undefined){
+			resultPlayer = await fetch(`/api/players`, {method: 'POST', body: JSON.stringify(newPlayerName), headers: {'Content-Type': 'application/json'}});
+		} else if (newPlayerName == currentPlayer.playerName){
 			return;
+		} else {
+			currentPlayer.playerName = newPlayerName;
+			if (currentPlayer.changedName == null){
+				currentPlayer.changedName = 1;
+			} else {
+				currentPlayer.changedName++;
+			}
+			resultPlayer = await fetch(`/api/players`, {method: 'PUT', body: JSON.stringify(currentPlayer), headers: {'Content-Type': 'application/json'}});
 		}
-
-		const resultPlayer = await fetch(`/api/players`, {method: 'POST', body: JSON.stringify(newPlayerName), headers: {'Content-Type': 'application/json'}});
 
         if (resultPlayer.status != 200 ) {
             console.log(500, "something wrong with the database");

@@ -28,7 +28,15 @@ export async function post(request) {
 }
 
 export async function put(request) {
-	const player = request.body;
+	const player = {
+		playerId: request.body.playerId,
+		playerName: request.body.playerName,
+		dailyGold: request.body.dailyGold,
+		dailySilver: request.body.dailySilver,
+		dailyBronze: request.body.dailyBronze,
+		edits: request.body.edits,
+		changedName: request.body.changedName
+	};
 	await updatePlayer(player);
 
 	return {

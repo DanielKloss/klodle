@@ -13,8 +13,8 @@ async function getConnection() {
 export async function getAllPlayers() {
     const connection = await getConnection();
 	const rows = await connection.query(
-		'SELECT playerId, playerName, dailyGold, dailySilver, dailyBronze FROM players;'
-    );
+		'SELECT playerId, playerName, dailyGold, dailySilver, dailyBronze, edits, changedName FROM players;'
+	);
     const players = rows[0];
 	connection.end();
 	return {
@@ -77,7 +77,7 @@ export async function insertPlayer(playerName) {
 
 export async function updatePlayer(player) {
 	const connection = await getConnection();
-	await connection.query('UPDATE players SET playerName = ? WHERE playerId = ?;', [player.playerName, player.playerId]);
+	await connection.query('UPDATE players SET playerName = ?, edits = ?, changedName = ? WHERE playerId = ?;', [player.playerName, player.edits, player.changedName, player.playerId]);
 	connection.end();
 }
 

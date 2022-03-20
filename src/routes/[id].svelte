@@ -12,15 +12,19 @@
 </script>
 
 <script>
-    import IoMdCreate from 'svelte-icons/io/IoMdCreate.svelte'
-    import IoMdArrowRoundBack from 'svelte-icons/io/IoMdArrowRoundBack.svelte'
-    import FaMedal from 'svelte-icons/fa/FaMedal.svelte'
-    import IoMdTrophy from 'svelte-icons/io/IoMdTrophy.svelte'
-    import AddPlayer from '$lib/components/addPlayer.svelte';
+    import IoMdCreate from 'svelte-icons/io/IoMdCreate.svelte';
+    import IoMdArrowRoundBack from 'svelte-icons/io/IoMdArrowRoundBack.svelte';
+    import FaMedal from 'svelte-icons/fa/FaMedal.svelte';
+    import IoMdTrophy from 'svelte-icons/io/IoMdTrophy.svelte';
 	import GiOwl from 'svelte-icons/gi/GiOwl.svelte';
-    import GiEarthWorm from 'svelte-icons/gi/GiEarthWorm.svelte'
+    import GiEarthWorm from 'svelte-icons/gi/GiEarthWorm.svelte';
     import GiSunglasses from 'svelte-icons/gi/GiSunglasses.svelte';
-    import GiSofa from 'svelte-icons/gi/GiSofa.svelte'
+    import GiSofa from 'svelte-icons/gi/GiSofa.svelte';
+    import MdFingerprint from 'svelte-icons/md/MdFingerprint.svelte';
+    import GiSpy from 'svelte-icons/gi/GiSpy.svelte';
+
+    import AddPlayer from '$lib/components/addPlayer.svelte';
+    import Modal from '$lib/components/modal.svelte';
 
     export let player;
     export let todaysDate;
@@ -29,21 +33,34 @@
     let forceChangeScore = false;
     let editPlayerName = false;
 
+    let modal;
+
     async function addScore(score) {
         let playerGame = { player, score }
 
 		const resultGame = await fetch('/api/games', {method: 'POST', body: JSON.stringify(playerGame), headers: {'Content-Type': 'application/json'}});
-
-        console.log(resultGame);
 
         if (resultGame.status != 200 ) {
             console.log(500, "something wrong with the database");
             return;
         }
 
+        if (forceChangeScore){
+            if (player.edits == null){
+                player.edits = 1;
+            } else {
+                player.edits++;
+            }
+            const resultPlayer = await fetch('/api/players', {method: 'PUT', body: JSON.stringify(player), headers: {'Content-Type': 'application/json'}});
+            
+            if (resultPlayer.status != 200 ) {
+                console.log(500, "something wrong with the database");
+                return;
+            }
+        }
+
         location.reload();
 	};
-    console.log(player)
 </script>
 
 <svelte:head>
@@ -53,12 +70,38 @@
 <a class="backButton" href="/"><IoMdArrowRoundBack/></a>
 <div class="section spaceBetween">
     {#if editPlayerName}
-        <AddPlayer currentPlayerName={player.playerName} buttonText="change" placeholder={"Change Player's Name"}/>
+        <AddPlayer currentPlayer={player} buttonText="change" placeholder={"Change Player's Name"}/>
     {:else}
         <p class="playerName">{player.playerName}</p>
         <div class="editButton" on:click="{() => editPlayerName = true}"><IoMdCreate/></div>
     {/if}
 </div>
+
+{#if modal}
+<Modal on:close="{() => modal = undefined}">
+    {#if modal.title == "early bird"}
+    <div class="trophyCount morning"><GiEarthWorm/></div>
+    {:else if modal.title == "afternoon chiller"}
+    <div class="trophyCount afternoon"><GiSunglasses/></div>
+    {:else if modal.title == "evening relaxer"}
+    <div class="trophyCount evening"><GiSofa/></div>
+    {:else if modal.title == "night owl"}
+    <div class="trophyCount night"><GiOwl/></div>
+    {:else if modal.title == "games completed"}
+    <div class="trophyCount gold"><IoMdTrophy/></div>
+    {:else if modal.title == "49 undefeated"}
+    <div class="cannonContainer red"><img src="/images/cannon.svg" alt="49 undefeated" class="cannon"/></div>
+    {:else if modal.title == "fat fingers"}
+    <div class="trophyCount finger"><MdFingerprint/></div>
+    {:else if modal.title == "undercover"}
+    <div class="trophyCount spy"><GiSpy/></div>
+    {:else if modal.title == "deep undercover"}
+    <div class="trophyCount deepSpy"><GiSpy/></div>
+    {/if}
+    <p class="subHeader capitalise">{modal.title}</p>
+    <p class="">{modal.description}</p>
+</Modal>
+{/if}
 
 <div class="section">
     {#if player.lastUpdated != todaysDate || forceChangeScore}
@@ -112,38 +155,56 @@
     <p class="subHeader">Achievements:</p>
     <div class="trophySection achievementLayout">
         {#if player.earlyBird > 0}
-        <div class="trophyContainer achievement">
+        <div class="trophyContainer achievement" on:click="{() => modal = {title: "early bird", description: "Entered a score between 6am and 12pm"}}">
             <div class="trophyCount morning"><GiEarthWorm/></div>
             <p>Early Bird</p>
         </div>
         {/if}
         {#if player.afternoonChiller > 0}
-        <div class="trophyContainer achievement">
+        <div class="trophyContainer achievement" on:click="{() => modal = {title: "afternoon chiller", description: "Entered a score between 12pm and 6pm"}}">
             <div class="trophyCount afternoon"><GiSunglasses/></div>
             <p>Afternoon Chiller</p>
         </div>
         {/if}
         {#if player.eveningRelaxer > 0}
-        <div class="trophyContainer achievement">
+        <div class="trophyContainer achievement" on:click="{() => modal = {title: "evening relaxer", description: "Entered a score between 6pm and 12am"}}">
             <div class="trophyCount evening"><GiSofa/></div>
             <p>Evening Relaxer</p>
         </div>
         {/if}
         {#if player.nightOwl > 0}
-        <div class="trophyContainer achievement">
+        <div class="trophyContainer achievement" on:click="{() => modal = {title: "night owl", description: "Entered a score between 12am and 6am"}}">
             <div class="trophyCount night"><GiOwl/></div>
             <p>Night Owl</p>
         </div>
         {/if}
         {#if player.biggestStreak >= 49}
-        <div class="trophyContainer achievement">
-            <div class="cannonContainer red"><img src="/images/cannon.svg" alt="49 49 undefeated" class="cannon"/></div>
+        <div class="trophyContainer achievement" on:click="{() => modal = {title: "49 undefeated", description: "Played 49 games on Klodle without losing"}}">
+            <div class="cannonContainer red"><img src="/images/cannon.svg" alt="49 undefeated" class="cannon"/></div>
             <p>49 Unbeaten</p>
+        </div>
+        {/if}
+        {#if player.edits > 2}
+        <div class="trophyContainer achievement" on:click="{() => modal = {title: "fat fingers", description: "Changed your score 3 or more times"}}">
+            <div class="trophyCount finger"><MdFingerprint/></div>
+            <p>Fat Fingers</p>
+        </div>
+        {/if}
+        {#if player.changedName > 0}
+        <div class="trophyContainer achievement" on:click="{() => modal = {title: "undercover", description: "Changed your name"}}">
+            <div class="trophyCount spy"><GiSpy/></div>
+            <p>Undercover</p>
+        </div>
+        {/if}
+        {#if player.changedName > 2}
+        <div class="trophyContainer achievement" on:click="{() => modal = {title: "deep undercover", description: "Changed your name 3 or more times"}}">
+            <div class="trophyCount deepSpy"><GiSpy/></div>
+            <p>Deep Undercover</p>
         </div>
         {/if}
         {#each player.games as game, index}
             {#if (index+1) % 50 == 0 && index != 0}
-            <div class="trophyContainer achievement">
+            <div class="trophyContainer achievement" on:click="{() => modal = {title: "games completed", description: "Played " + parseInt(index+1) + " games on Klodle"}}">
                 <div class="trophyCount gold"><IoMdTrophy/></div>
                 <p>{index+1} Games</p>
             </div>
@@ -356,6 +417,19 @@
         color: #EEEEEE;
     }
 
+    .finger {
+        background-color: #FFDFD3;
+    }
+
+    .spy {
+        background-color: darkgray;
+    }
+
+    .deepSpy {
+        background-color: #222222;
+        color: #EEEEEE;
+    }
+
     .cannonContainer {
         width: 60px;
 		height: 60px;
@@ -363,6 +437,7 @@
 		padding: 0.5rem;
 		display:flex;
         justify-content: center;
+        overflow: hidden;
     }
 
     .red {
