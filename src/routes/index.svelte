@@ -11,7 +11,6 @@
 
 <script>
 	import IoMdRefresh from 'svelte-icons/io/IoMdRefresh.svelte'
-	import IoMdTrophy from 'svelte-icons/io/IoMdTrophy.svelte'
 	import { swipe } from 'svelte-gestures';
 	import { fly } from 'svelte/transition';
 	import AddPlayer from "$lib/components/addPlayer.svelte";

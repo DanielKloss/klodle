@@ -54,7 +54,7 @@ export async function getPlayerByName(name) {
 export async function getGamesFromPlayerId(id) {
     const connection = await getConnection();
     const rows = await connection.query('SELECT gameId, gameDate, score FROM games WHERE games.playerId = ?;', [id]);
-    const games = rows[0];
+	const games = rows[0];
 	connection.end();
 	return {
 		body: {

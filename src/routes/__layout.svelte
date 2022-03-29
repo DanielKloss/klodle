@@ -3,8 +3,7 @@
 		try {
 			let archievedPlayers = [];
 			let leaderboardPlayers = [];
-        	let todaysDate = new Date().toJSON().slice(0, 10).toString();
-        	let yesterdaysDate = new Date(new Date().setDate(new Date().getDate()-1));
+        	let todaysDate = new Date().toLocaleString().slice(0, 10);
 
 			const playersResult = await fetch('/api/players');
 			const playersBody = await playersResult.json();
@@ -48,15 +47,12 @@
 						streakCount++;
 					}
 
-					if (new Date(game.gameDate).toJSON().slice(0, 10).toString() == todaysDate){
+					if (new Date(game.gameDate).toLocaleString().slice(0, 10) == todaysDate){
                 		player.todaysScore = game.score;
-						player.todaysTime = new Date(game.gameDate).toJSON().slice(11, 16).toString();
-            		} else if (new Date(game.gameDate).toJSON().slice(0, 10).toString() == yesterdaysDate){
-						player.yesterdaysScore = game.score;
-						player.yesterdaysTime = newDate(game.gameDate).toJSON().slice(11, 16).toString();
-					}
+						player.todaysTime = new Date(game.gameDate).toLocaleString().slice(12, 17);
+            		}
 
-					let gameHour = new Date(game.gameDate).getHours();
+					let gameHour = new Date(game.gameDate).getHours().toLocaleString();
 
 					if (gameHour < 6){
 						player.nightOwl++;
@@ -96,7 +92,7 @@
     			const weekAgo = Date.now() - week;
 
 				if (player.games.length > 0){
-					player.lastUpdated = new Date(player.games[0].gameDate).toJSON().slice(0, 10).toString();
+					player.lastUpdated = new Date(player.games[0].gameDate).toLocaleString().slice(0, 10);
 					if (new Date(player.games[0].gameDate) < weekAgo) {
 						archievedPlayers.push(player);
 					} else {
@@ -131,8 +127,6 @@
 	<p>{new Date().getFullYear()}</p>
 	<p>Version 2.2</p>
 </div>
-
-<p class="message">Lots of changes to achievements. You can now click on an achievement to check what you (or someone else) got it for. Achievements will no longer be announced on the front page. Let me know if anything isn't working as expected.</p>
 
 <main>
     <slot></slot>
