@@ -25,7 +25,12 @@
 				player.afternoonChiller = 0;
 				player.nightOwl = 0;
 				player.eveningRelaxer = 0;
-				player.previousFourTimes = [];
+				player.christmas = false;
+				player.newYear = false;
+				player.easter = false;
+				player.longestDay = false;
+				player.shortestDay = false;
+				player.valentinesDay = false;
 
 				player.scores = [{score: 1, count:0}, {score: 2, count:0}, {score: 3, count:0}, {score: 4, count:0}, {score: 5, count:0}, {score: 6, count:0}, {score: 7, count: 0}]
 
@@ -62,6 +67,30 @@
 						player.afternoonChiller++;
 					} else if (gameHour >= 18){
 						player.eveningRelaxer++;
+					}
+
+					if (new Date(game.gameDate).getMonth().toLocaleString() == "11" && new Date(game.gameDate).getDate().toLocaleString() == "25"){
+						player.christmas = true;
+					}
+
+					if (new Date(game.gameDate).getMonth().toLocaleString() == "0" && new Date(game.gameDate).getDate().toLocaleString() == "1"){
+						player.newYear = true;
+					}
+
+					if (new Date(game.gameDate).getMonth().toLocaleString() == "3" && new Date(game.gameDate).getDate().toLocaleString() == "17"){
+						player.easter = true;
+					}
+
+					if (new Date(game.gameDate).getMonth().toLocaleString() == "5" && new Date(game.gameDate).getDate().toLocaleString() == "21"){
+						player.longestDay = true;
+					}
+
+					if (new Date(game.gameDate).getMonth().toLocaleString() == "11" && new Date(game.gameDate).getDate().toLocaleString() == "21"){
+						player.shortestDay = true;
+					}
+
+					if (new Date(game.gameDate).getMonth().toLocaleString() == "1" && new Date(game.gameDate).getDate().toLocaleString() == "14"){
+						player.valentinesDay = true;
 					}
 				}
 

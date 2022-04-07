@@ -22,6 +22,12 @@
     import GiSofa from 'svelte-icons/gi/GiSofa.svelte';
     import MdFingerprint from 'svelte-icons/md/MdFingerprint.svelte';
     import GiSpy from 'svelte-icons/gi/GiSpy.svelte';
+    import GiPresent from 'svelte-icons/gi/GiPresent.svelte';
+    import FaGlassCheers from 'svelte-icons/fa/FaGlassCheers.svelte';
+    import GiRabbit from 'svelte-icons/gi/GiRabbit.svelte';
+    import WiDaySunny from 'svelte-icons/wi/WiDaySunny.svelte'
+    import WiSunset from 'svelte-icons/wi/WiSunset.svelte'
+    import IoIosHeart from 'svelte-icons/io/IoIosHeart.svelte'
 
     import AddPlayer from '$lib/components/addPlayer.svelte';
     import Modal from '$lib/components/modal.svelte';
@@ -97,6 +103,18 @@
     <div class="trophyCount spy"><GiSpy/></div>
     {:else if modal.title == "deep undercover"}
     <div class="trophyCount deepSpy"><GiSpy/></div>
+    {:else if modal.title == "christmas klodler"}
+    <div class="trophyCount christmas"><GiPresent/></div>
+    {:else if modal.title == "easter klodler"}
+    <div class="trophyCount easter"><GiRabbit/></div>
+    {:else if modal.title == "new year klodler"}
+    <div class="trophyCount newYear"><FaGlassCheers/></div>
+    {:else if modal.title == "a long days klodle"}
+    <div class="trophyCount longestDay"><WiDaySunny/></div>
+    {:else if modal.title == "a short days klodle"}
+    <div class="trophyCount shortestDay"><WiSunset/></div>
+    {:else if modal.title == "love at first klodle"}
+    <div class="trophyCount valentines"><IoIosHeart/></div>
     {/if}
     <p class="subHeader capitalise">{modal.title}</p>
     <p class="">{modal.description}</p>
@@ -200,6 +218,42 @@
         <div class="trophyContainer achievement" on:click="{() => modal = {title: "deep undercover", description: "Changed your name 3 or more times"}}">
             <div class="trophyCount deepSpy"><GiSpy/></div>
             <p>Deep Undercover</p>
+        </div>
+        {/if}
+        {#if player.christmas}
+        <div class="trophyContainer achievement" on:click="{() => modal = {title: "christmas klodler", description: "Entered a score on Christmas Day"}}">
+            <div class="trophyCount christmas"><GiPresent/></div>
+            <p>Christmas Klodler</p>
+        </div>
+        {/if}
+        {#if player.easter}
+        <div class="trophyContainer achievement" on:click="{() => modal = {title: "easter klodler", description: "Entered a score on Easter Day"}}">
+            <div class="trophyCount easter"><GiRabbit/></div>
+            <p>Easter Klodler</p>
+        </div>
+        {/if}
+        {#if player.newYear}
+        <div class="trophyContainer achievement" on:click="{() => modal = {title: "new year klodler", description: "Entered a score on New Years Day"}}">
+            <div class="trophyCount newYear"><FaGlassCheers/></div>
+            <p>New Year Klodler</p>
+        </div>
+        {/if}
+        {#if player.longestDay}
+        <div class="trophyContainer achievement" on:click="{() => modal = {title: "a long days klodle", description: "Entered a score on Summer Solstice"}}">
+            <div class="trophyCount longestDay"><WiDaySunny/></div>
+            <p>A Long Days Klodle</p>
+        </div>
+        {/if}
+        {#if player.shortestDay}
+        <div class="trophyContainer achievement" on:click="{() => modal = {title: "a short days klodle", description: "Entered a score on Winter Solstice"}}">
+            <div class="trophyCount shortestDay"><WiSunset/></div>
+            <p>A Short Days Klodle</p>
+        </div>
+        {/if}
+        {#if player.valentinesDay}
+        <div class="trophyContainer achievement" on:click="{() => modal = {title: "love at first klodle", description: "Entered a score on Valentines Day"}}">
+            <div class="trophyCount valentines"><IoIosHeart/></div>
+            <p>Love at First Klodle</p>
         </div>
         {/if}
         {#each player.games as game, index}
@@ -427,6 +481,31 @@
 
     .deepSpy {
         background-color: #222222;
+        color: #EEEEEE;
+    }
+
+    .christmas {
+        background-color: #aa0000;
+    }
+
+    .newYear {
+        background-color: #FFF7B6;
+    }
+
+    .easter {
+        background-color: #9CD5D4;
+    }
+
+    .valentines {
+        background-color: #F69AB5;
+    }
+
+    .longestDay {
+        background-color: #F79D39;
+    }
+
+    .shortestDay {
+        background-color: #07206D;
         color: #EEEEEE;
     }
 
