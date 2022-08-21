@@ -6,11 +6,11 @@
         	let todaysDate = new Date().toLocaleString().slice(0, 10);
 
 			const playersResult = await fetch('/api/players');
-			const playersBody = await playersResult.json();
-			const players = playersBody.players;
+	 		const playersBody = await playersResult.json();
+	 		const players = playersBody.players.data;
 
 			for (const player of players) {
-				const gamesResult = await fetch(`/api/games?id=${player.playerId}`);
+				const gamesResult = await fetch(`/api/games?id=${player.ref['@ref'].id}`);
 				const gamesBody = await gamesResult.json();
 				
 				player.games = gamesBody.games;
@@ -37,12 +37,12 @@
 				let streakCount = 0;
 
 				for (const game of player.games){
-					player.scores.find(s => s.score == game.score).count++;
+					player.scores.find(s => s.score == game.data.score).count++;
 
 					player.numberOfGames++;
-					player.overallScore += game.score;
+					player.overallScore += game.data.score;
 
-					if (game.score > 6){
+					if (game.data.score > 6){
 						player.numberOfFails++;
 						if (streakCount > player.biggestStreak){
 							player.biggestStreak = streakCount;
@@ -52,12 +52,12 @@
 						streakCount++;
 					}
 
-					if (new Date(game.gameDate).toLocaleString().slice(0, 10) == todaysDate){
-                		player.todaysScore = game.score;
-						player.todaysTime = new Date(game.gameDate).toLocaleString().slice(12, 17);
+					if (new Date(game.data.gameDate).toLocaleString().slice(0, 10) == todaysDate){
+                		player.todaysScore = game.data.score;
+						player.todaysTime = new Date(game.data.gameDate).toLocaleString().slice(12, 17);
             		}
 
-					let gameHour = new Date(game.gameDate).getHours().toLocaleString();
+					let gameHour = new Date(game.data.gameDate).getHours().toLocaleString();
 
 					if (gameHour < 6){
 						player.nightOwl++;
@@ -69,27 +69,27 @@
 						player.eveningRelaxer++;
 					}
 
-					if (new Date(game.gameDate).getMonth().toLocaleString() == "11" && new Date(game.gameDate).getDate().toLocaleString() == "25"){
+					if (new Date(game.data.gameDate).getMonth().toLocaleString() == "11" && new Date(game.data.gameDate).getDate().toLocaleString() == "25"){
 						player.christmas = true;
 					}
 
-					if (new Date(game.gameDate).getMonth().toLocaleString() == "0" && new Date(game.gameDate).getDate().toLocaleString() == "1"){
+					if (new Date(game.data.gameDate).getMonth().toLocaleString() == "0" && new Date(game.data.gameDate).getDate().toLocaleString() == "1"){
 						player.newYear = true;
 					}
 
-					if (new Date(game.gameDate).getMonth().toLocaleString() == "3" && new Date(game.gameDate).getDate().toLocaleString() == "17"){
+					if (new Date(game.data.gameDate).getMonth().toLocaleString() == "3" && new Date(game.data.gameDate).getDate().toLocaleString() == "17"){
 						player.easter = true;
 					}
 
-					if (new Date(game.gameDate).getMonth().toLocaleString() == "5" && new Date(game.gameDate).getDate().toLocaleString() == "21"){
+					if (new Date(game.data.gameDate).getMonth().toLocaleString() == "5" && new Date(game.data.gameDate).getDate().toLocaleString() == "21"){
 						player.longestDay = true;
 					}
 
-					if (new Date(game.gameDate).getMonth().toLocaleString() == "11" && new Date(game.gameDate).getDate().toLocaleString() == "21"){
+					if (new Date(game.data.gameDate).getMonth().toLocaleString() == "11" && new Date(game.data.gameDate).getDate().toLocaleString() == "21"){
 						player.shortestDay = true;
 					}
 
-					if (new Date(game.gameDate).getMonth().toLocaleString() == "1" && new Date(game.gameDate).getDate().toLocaleString() == "14"){
+					if (new Date(game.data.gameDate).getMonth().toLocaleString() == "1" && new Date(game.data.gameDate).getDate().toLocaleString() == "14"){
 						player.valentinesDay = true;
 					}
 				}
@@ -114,15 +114,15 @@
 				player.averageScore = player.overallScore / player.numberOfGames;
 
 				player.games.sort(function(a,b){
-					return new Date(b.gameDate) - new Date(a.gameDate);
+					return new Date(b.data.gameDate) - new Date(a.data.gameDate);
 				});
 
 				const week = 1000 * 60 * 60 * 24 * 7;
     			const weekAgo = Date.now() - week;
 
 				if (player.games.length > 0){
-					player.lastUpdated = new Date(player.games[0].gameDate).toLocaleString().slice(0, 10);
-					if (new Date(player.games[0].gameDate) < weekAgo) {
+					player.lastUpdated = new Date(player.games[0].data.gameDate).toLocaleString().slice(0, 10);
+					if (new Date(player.games[0].data.gameDate) < weekAgo) {
 						archievedPlayers.push(player);
 					} else {
 						leaderboardPlayers.push(player);

@@ -17,14 +17,14 @@
 
 		if (currentPlayer == undefined){
 			resultPlayer = await fetch(`/api/players`, {method: 'POST', body: JSON.stringify(newPlayerName), headers: {'Content-Type': 'application/json'}});
-		} else if (newPlayerName == currentPlayer.playerName){
+		} else if (newPlayerName == currentPlayer.data.playerName){
 			return;
 		} else {
-			currentPlayer.playerName = newPlayerName;
-			if (currentPlayer.changedName == null){
-				currentPlayer.changedName = 1;
+			currentPlayer.data.playerName = newPlayerName;
+			if (currentPlayer.data.changedName == null){
+				currentPlayer.data.changedName = 1;
 			} else {
-				currentPlayer.changedName++;
+				currentPlayer.data.changedName++;
 			}
 			resultPlayer = await fetch(`/api/players`, {method: 'PUT', body: JSON.stringify(currentPlayer), headers: {'Content-Type': 'application/json'}});
 		}

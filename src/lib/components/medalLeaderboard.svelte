@@ -9,11 +9,11 @@
 
     function sortPlayers(a, b) { 
         if (b.dailyGold - a.dailyGold != 0){
-            return b.dailyGold - a.dailyGold;
-        } else if (b.dailySilver - a.dailySilver != 0){
-            return b.dailySilver - a.dailySilver;
-        } else if (b.dailyBronze - a.dailyBronze != 0){
-            return b.dailyBronze - a.dailyBronze
+            return b.data.dailyGold - a.data.dailyGold;
+        } else if (b.data.dailySilver - a.data.dailySilver != 0){
+            return b.data.dailySilver - a.data.dailySilver;
+        } else if (b.data.dailyBronze - a.data.dailyBronze != 0){
+            return b.data.dailyBronze - a.data.dailyBronze
         } else {
             return b.numberOfGames - a.numberOfGames;
         }
@@ -29,13 +29,13 @@
         <p>Medals</p>
     </div>
     {#each leaderboardPlayers as player, i}
-    <a class="player {trophyClasses[i]}" href="/{player.playerId}">
+    <a class="player {trophyClasses[i]}" href="/{player.ref['@ref'].id}">
         <p class="position">{i+1}</p>
-        <p class="playerName">{player.playerName}</p>
+        <p class="playerName">{player.data.playerName}</p>
         <div class="trophySection">
-            <div class="trophyCount gold"><p>{player.dailyGold}</p></div>
-            <div class="trophyCount silver"><p>{player.dailySilver}</p></div>
-            <div class="trophyCount bronze"><p>{player.dailyBronze}</p></div>
+            <div class="trophyCount gold"><p>{player.data.dailyGold}</p></div>
+            <div class="trophyCount silver"><p>{player.data.dailySilver}</p></div>
+            <div class="trophyCount bronze"><p>{player.data.dailyBronze}</p></div>
         </div>
     </a>
     {/each}

@@ -1,4 +1,4 @@
-import { getAllPlayers, getPlayerById, insertPlayer, updatePlayer, getPlayerByName } from "../../sql";
+import { getAllPlayers, getPlayerById, getPlayerByName } from '../../fql';
 
 export async function get(request) {
 	let id = request.url.searchParams.get('id');

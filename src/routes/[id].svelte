@@ -1,6 +1,6 @@
 <script context="module">
 	export async function load({ stuff, params }){
-        let player = stuff.leaderboardPlayers.find(p => p.playerId == params.id) != undefined ? stuff.leaderboardPlayers.find(p => p.playerId == params.id) : stuff.archievedPlayers.find(p => p.playerId == params.id);
+        let player = stuff.leaderboardPlayers.find(p => p.ref['@ref'].id == params.id) != undefined ? stuff.leaderboardPlayers.find(p => p.ref['@ref'].id == params.id) : stuff.archievedPlayers.find(p => p.ref['@ref'].id == params.id);
 
 		return {
 			props: {
@@ -52,10 +52,10 @@
         }
 
         if (forceChangeScore){
-            if (player.edits == null){
-                player.edits = 1;
+            if (player.data.edits == null){
+                player.data.edits = 1;
             } else {
-                player.edits++;
+                player.data.edits++;
             }
             const resultPlayer = await fetch('/api/players', {method: 'PUT', body: JSON.stringify(player), headers: {'Content-Type': 'application/json'}});
             
@@ -70,7 +70,7 @@
 </script>
 
 <svelte:head>
-	<title>Klodle - {player.playerName}</title>
+	<title>Klodle - {player.data.playerName}</title>
 </svelte:head>
 
 <a class="backButton" href="/"><IoMdArrowRoundBack/></a>
@@ -78,7 +78,7 @@
     {#if editPlayerName}
         <AddPlayer currentPlayer={player} buttonText="change" placeholder={"Change Player's Name"}/>
     {:else}
-        <p class="playerName">{player.playerName}</p>
+        <p class="playerName">{player.data.playerName}</p>
         <div class="editButton" on:click="{() => editPlayerName = true}"><IoMdCreate/></div>
     {/if}
 </div>
@@ -153,19 +153,19 @@
             <div class="trophy">
                 <FaMedal />
             </div>
-            <p class="medalCount">{player.dailyGold}</p>
+            <p class="medalCount">{player.data.dailyGold}</p>
         </div>
         <div class="trophySection silver">
             <div class="trophy">
                 <FaMedal />
             </div>
-            <p class="medalCount">{player.dailySilver}</p>
+            <p class="medalCount">{player.data.dailySilver}</p>
         </div>
         <div class="trophySection bronze">
             <div class="trophy">
                 <FaMedal />
             </div>
-            <p class="medalCount">{player.dailyBronze}</p>
+            <p class="medalCount">{player.data.dailyBronze}</p>
         </div>
     </div>
 </div>

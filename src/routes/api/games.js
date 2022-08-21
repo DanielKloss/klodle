@@ -1,4 +1,4 @@
-import { getGamesFromPlayerId, insertGame, deleteGame } from "../../sql";
+import { getGamesFromPlayerId } from "../../fql";
 
 export async function get(request) {
 	const id = request.url.searchParams.get('id');

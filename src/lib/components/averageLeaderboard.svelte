@@ -36,9 +36,9 @@
         <p>Medals</p>
     </div>
     {#each leaderboardPlayers as player, i}
-    <a class="player {trophyClasses[i]}" href="/{player.playerId}">
+    <a class="player {trophyClasses[i]}" href="/{player.ref['@ref'].id}">
         <p class="position">{i+1}</p>
-        <p class="playerName">{player.playerName}</p>
+        <p class="playerName">{player.data.playerName}</p>
         {#if !isFinite(player.averageScore)}
         <p class="playerScore">-</p>
         {:else}
@@ -52,9 +52,9 @@
         </div>
         {/if}
         <div class="trophySection">
-            <div class="trophyCount gold"><p>{player.dailyGold}</p></div>
-            <div class="trophyCount silver"><p>{player.dailySilver}</p></div>
-            <div class="trophyCount bronze"><p>{player.dailyBronze}</p></div>
+            <div class="trophyCount gold"><p>{player.data.dailyGold}</p></div>
+            <div class="trophyCount silver"><p>{player.data.dailySilver}</p></div>
+            <div class="trophyCount bronze"><p>{player.data.dailyBronze}</p></div>
         </div>
     </a>
     {/each}

@@ -15,12 +15,12 @@
             return -1;
         }else if (a.todaysScore - b.todaysScore != 0){
             return a.todaysScore - b.todaysScore;
-        } else if (a.dailyGold - b.dailyGold != 0){
-            return a.dailyGold - b.dailyGold;
-        } else if (a.dailySilver - b.dailySilver != 0){
-            return a.dailySilver - b.dailySilver;
-        } else if (a.dailyBronze - b.dailyBronze != 0){
-            return a.dailyBronze - b.dailyBronze;
+        } else if (a.data.dailyGold - b.data.dailyGold != 0){
+            return a.data.dailyGold - b.data.dailyGold;
+        } else if (a.data.dailySilver - b.data.dailySilver != 0){
+            return a.data.dailySilver - b.data.dailySilver;
+        } else if (a.data.dailyBronze - b.data.dailyBronze != 0){
+            return a.data.dailyBronze - b.data.dailyBronze;
         } else if (a.todaysTime > b.todaysTime){
             return 1;
         } else if (a.todaysTime < b.todaysTime){
@@ -42,7 +42,7 @@
         <p>Medals</p>
     </div>
     {#each leaderboardPlayers as player, i}
-    <a class="player {trophyClasses[i]}" href="/{player.playerId}">
+    <a class="player {trophyClasses[i]}" href="/{player.ref['@ref'].id}">
         {#if i < 3}
         <div class="trophy">
             <FaMedal/>
@@ -51,7 +51,7 @@
         <div class="trophy"></div>
         {/if}
         <p class="position">{i+1}</p>
-        <p class="playerName">{player.playerName}</p>
+        <p class="playerName">{player.data.playerName}</p>
         {#if player.todaysScore == 7}
         <div>
             <p class="playerScore">X</p>
@@ -66,9 +66,9 @@
         </div>
         {/if}
         <div class="trophySection">
-            <div class="trophyCount gold"><p>{player.dailyGold}</p></div>
-            <div class="trophyCount silver"><p>{player.dailySilver}</p></div>
-            <div class="trophyCount bronze"><p>{player.dailyBronze}</p></div>
+            <div class="trophyCount gold"><p>{player.data.dailyGold}</p></div>
+            <div class="trophyCount silver"><p>{player.data.dailySilver}</p></div>
+            <div class="trophyCount bronze"><p>{player.data.dailyBronze}</p></div>
         </div>
     </a>
     {/each}

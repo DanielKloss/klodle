@@ -5,8 +5,8 @@
 <div class="players">
     {#if archievedPlayers}
     {#each archievedPlayers as player}
-    <a class="archieved" href="/{player.playerId}">
-        <p class="playerName">{player.playerName}</p>
+    <a class="archieved" href="/{player.ref['@ref'].id}">
+        <p class="playerName">{player.data.playerName}</p>
         <div>
             <p class="playerScore">{player.lastUpdated}</p>
             <p class="scoreDetail">last played</p>
